@@ -20,8 +20,10 @@
                 <label class="form-label d-block fw-bold">Mendaftar Sebagai:</label>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="role" id="roleCustomer" value="customer"
-                        required>
-                    <label class="form-check-label" for="roleCustomer">Customer (Pembeli)</label>
+                        disabled>
+                    <label class="form-check-label text-muted" for="roleCustomer">
+                        Customer <small>(Segera Hadir)</small>
+                    </label>
                 </div>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="role" id="roleSeller" value="seller" required>
