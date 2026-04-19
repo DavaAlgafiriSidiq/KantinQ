@@ -16,34 +16,10 @@ class AkunSellerController extends Controller
         return view('session-seller.seller-main');
     }
 
-    // Untuk Menampilkan Tampilan Register Seller
-    public function sellerRegister()
-    {
-        return view('session-seller/seller-register');
-    }
-
     // Untuk Menampilkan Tampilan Login Seller
     public function sellerLogin()
     {
         return view('session-seller/seller-login');
-    }
-
-    // Fungsi untuk proses register seller
-    public function sellerRegisters(Request $request)
-    {
-        $validated = $request->validate([
-            'username' => 'required|string|max:255',
-            'email' => 'required|email|unique:seller,email',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
-        $seller = AkunSellerModel::create([
-            'username' => $request->username,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        return redirect()->intended('/seller')->with('success', 'Akun Berhasil Dibuat!');
     }
 
     // Fungsi untuk proses login seller

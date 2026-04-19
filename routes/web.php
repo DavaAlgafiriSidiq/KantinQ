@@ -1,26 +1,29 @@
 <?php
 
 use App\Http\Controllers\AkunSellerController;
+use App\Http\Controllers\RegisterController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Tampilan Untuk Seller
+// REGISTRASI UMUM (Customer & Seller)
+Route::middleware('guest')->group(function () {
+    Route::get('/register', [RegisterController::class, 'showRegistrationForm']);
+    Route::post('/register', [RegisterController::class, 'processRegistration']);
+});
+
+// Tampilan Untuk Seller (Dashboard)
 Route::middleware('auth:seller')->controller(AkunSellerController::class)->group(function () {
     // SELLER (DASHBOARD)
     Route::get('/seller', 'sellerMain');
 });
 
-// Tampilan Login dan Register Untuk Seller
+// Tampilan Login Untuk Seller
 Route::middleware('guest:seller')->controller(AkunSellerController::class)->group(function () {
-    // SELLER (LOGIN)
-    Route::get('/seller-login', [AkunSellerController::class, 'sellerLogin'])->name('login-seller');
-    Route::post('/seller-login', [AkunSellerController::class, 'sellerLogins']);
-    // SELLER (REGISTER)
-    Route::get('/seller-register', [AkunSellerController::class, 'sellerRegister']);
-    Route::post('/seller-register', [AkunSellerController::class, 'sellerRegisters']);
+    Route::get('/seller-login', 'sellerLogin')->name('login-seller');
+    Route::post('/seller-login', 'sellerLogins');
 });
 
 // Untuk Logout Seller
