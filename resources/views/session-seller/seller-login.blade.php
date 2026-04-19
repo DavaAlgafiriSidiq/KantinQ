@@ -37,7 +37,7 @@
         </form>
 
         <div class="text-center mt-3">
-            <small>Belum punya akun? <a href="/seller-register">Daftar di sini</a></small>
+            <small>Belum punya akun? <a href="/register">Daftar di sini</a></small>
         </div>
     </div>
 
