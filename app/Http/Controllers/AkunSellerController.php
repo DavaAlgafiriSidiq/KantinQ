@@ -42,7 +42,6 @@ class AkunSellerController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-        Auth::login($seller);
 
         return redirect()->intended('/seller')->with('success', 'Akun Berhasil Dibuat!');
     }
