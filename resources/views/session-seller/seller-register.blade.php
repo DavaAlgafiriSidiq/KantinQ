@@ -11,6 +11,10 @@
     <div class="card shadow p-4" style="width: 100%; max-width: 400px;">
         <h3 class="text-center mb-4">Daftar Seller KantinQ</h3>
 
+        @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+        
         <form action="/seller-register" method="POST">
             @csrf <div class="mb-3">
                 <label class="form-label">Username</label>
