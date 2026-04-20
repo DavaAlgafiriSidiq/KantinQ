@@ -20,9 +20,9 @@ class RegisterController extends Controller
     {
         // Validasi Input Dasar
         $request->validate([
-            'role' => 'required|in:customer,seller',
-            'username' => 'required|string|max:255',
-            'password' => 'required|string|min:8|confirmed',
+            'username' => 'required',
+            'email' => 'required|email|unique:seller,email',
+            'password' => 'required|min:8|confirmed',
         ]);
 
         // Cabang Logika berdasarkan Role
