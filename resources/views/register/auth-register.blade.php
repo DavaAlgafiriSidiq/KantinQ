@@ -43,13 +43,14 @@
 
             <div class="mb-3">
                 <label class="form-label">Password</label>
-                <input type="password" id="pass" name="password" class="form-control" required>
+                <input type="password" id="pass" name="password" class="form-control" minlength="8" required>
+                <small class="text-muted">Minimal 8 karakter.</small>
             </div>
 
             <div class="mb-4">
                 <label class="form-label">Konfirmasi Password</label>
-                <input type="password" name="password_confirmation" class="form-control" required
-                    onkeyup="document.getElementById('btn-daftar').disabled = (this.value !== document.getElementById('pass').value)">
+                <input type="password" id="konfirmasiPassword" name="password_confirmation" class="form-control"
+                    required>
             </div>
 
             <button type="submit" id="btn-daftar" class="btn btn-primary w-100" disabled>Daftar Sekarang</button>
@@ -63,3 +64,20 @@
 </body>
 
 </html>
+
+<script>
+    const pass = document.getElementById('pass');
+    const confirm = document.getElementById('konfirmasiPassword');
+    const btn = document.getElementById('btn-daftar');
+
+    function validasiCepat() {
+        // Cek apakah password dan konfirmasi cocok, dan apakah panjang password cukup
+        const cocok = pass.value === confirm.value;
+        const panjangCukup = pass.value.length >= 8;
+
+        btn.disabled = !(cocok && panjangCukup);
+    }
+
+    pass.oninput = validasiCepat;
+    confirm.oninput = validasiCepat;
+</script>
