@@ -44,7 +44,6 @@
             <div class="mb-3">
                 <label class="form-label">Password</label>
                 <input type="password" id="pass" name="password" class="form-control" minlength="8" required>
-                <small class="text-muted">Minimal 8 karakter.</small>
             </div>
 
             <div class="mb-4">
@@ -53,7 +52,7 @@
                     required>
             </div>
 
-            <button type="submit" id="btn-daftar" class="btn btn-primary w-100" disabled>Daftar Sekarang</button>
+            <button type="submit" id="btn-daftar" class="btn btn-primary w-100">Daftar Sekarang</button>
         </form>
 
         <div class="text-center mt-3">
