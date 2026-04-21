@@ -16,6 +16,7 @@
         <form action="/register" method="POST">
             @csrf
 
+            // Menampilkan pesan error jika ada
             @if ($errors->any())
                 <div class="alert alert-danger py-2">
                     <ul class="mb-0 small">
@@ -26,6 +27,7 @@
                 </div>
             @endif
 
+            // Pilihan role (customer saat ini dinonaktifkan)
             <div class="mb-3">
                 <label class="form-label d-block fw-bold">Mendaftar Sebagai:</label>
                 <div class="form-check form-check-inline">
@@ -41,6 +43,7 @@
                 </div>
             </div>
 
+            // Input untuk nama toko atau nama lengkap
             <div class="mb-3">
                 <label class="form-label">Nama Toko / Nama Lengkap</label>
                 <input type="text" name="username" class="form-control" required>
@@ -65,6 +68,7 @@
             <button type="submit" id="btn-daftar" class="btn btn-primary w-100">Daftar Sekarang</button>
         </form>
 
+        // Link untuk login jika sudah punya akun
         <div class="text-center mt-3">
             <small>Sudah punya akun? <a href="/seller-login">Login di sini</a></small>
         </div>

@@ -43,7 +43,7 @@ class RegisterController extends Controller
 
         } else {
 
-            // Validasi email unik untuk customer dan logika simpan (Nanti dilanjutkan oleh tim)
+            // Validasi email unik untuk customer dan logika simpan (Nanti dilanjutkan)
 
         }
     }
