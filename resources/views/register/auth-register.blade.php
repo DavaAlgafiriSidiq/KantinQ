@@ -16,6 +16,16 @@
         <form action="/register" method="POST">
             @csrf
 
+            @if ($errors->any())
+                <div class="alert alert-danger py-2">
+                    <ul class="mb-0 small">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <div class="mb-3">
                 <label class="form-label d-block fw-bold">Mendaftar Sebagai:</label>
                 <div class="form-check form-check-inline">
@@ -63,20 +73,3 @@
 </body>
 
 </html>
-
-<script>
-    const pass = document.getElementById('pass');
-    const confirm = document.getElementById('konfirmasiPassword');
-    const btn = document.getElementById('btn-daftar');
-
-    function validasiCepat() {
-        // Cek apakah password dan konfirmasi cocok, dan apakah panjang password cukup
-        const cocok = pass.value === confirm.value;
-        const panjangCukup = pass.value.length >= 8;
-
-        btn.disabled = !(cocok && panjangCukup);
-    }
-
-    pass.oninput = validasiCepat;
-    confirm.oninput = validasiCepat;
-</script>
