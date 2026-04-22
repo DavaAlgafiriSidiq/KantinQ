@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AkunSellerController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\ProdukController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,6 +19,10 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth:seller')->controller(AkunSellerController::class)->group(function () {
     // SELLER (DASHBOARD)
     Route::get('/seller', 'sellerMain');
+    Route::get('/seller-produk', [ProdukController::class, 'index']);
+    Route::get('/seller-tambah-produk', [ProdukController::class, 'create'])->name('produk.create');
+    Route::get('/seller-edit-produk/{id}', [ProdukController::class, 'edit'])->name('produk.edit');
+    Route::delete('/seller-hapus-produk/{id}', [ProdukController::class, 'destroy'])->name('produk.destroy');
 });
 
 // Tampilan Login Untuk Seller
