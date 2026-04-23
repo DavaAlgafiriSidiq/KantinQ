@@ -20,7 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
             // Default: lempar ke rute login utama (jika ada)
-            return route('login');
+            return route('login-seller'); // Arahkan ke rute login utama (bisa disesuaikan jika ada rute login umum)
         });
     })
     ->withExceptions(function (Exceptions $exceptions) {
