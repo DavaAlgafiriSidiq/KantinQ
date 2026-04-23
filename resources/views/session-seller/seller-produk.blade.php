@@ -16,9 +16,10 @@
                   </a>
                 </div>
                 <div class="table-responsive text-nowrap">
-                  <table class="table table-striped">
+                  <table class="table table-striped style="table-layout: fixed; width: 100%;">
                     <thead>
                       <tr>
+                        <th>Foto Produk</th>
                         <th>Nama Produk</th>
                         <th>Kategori</th>
                         <th>Deskripsi</th>
@@ -31,9 +32,14 @@
                     <tbody class="table-border-bottom-0">
                       @foreach ($produk as $item)
                       <tr>
-                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i> 
-                        <strong>{{ $item->nama_produk }}</strong>
-                      </td>
+                        <td>
+                          @if($item->foto_produk)
+                            <img src="{{ asset($item->foto_produk) }}" alt="{{ $item->nama_produk }}" width="100">
+                          @else
+                            <i class="fab fa-angular fa-lg text-danger me-3">tidak ada foto</i>
+                          @endif
+                        </td>
+                        <td><strong>{{ $item->nama_produk }}</strong></td>
                         <!-- badge kategori diambil dari model produk dari fungsi badgeKategori -->
                         <!-- { !!  !! } digunakan agar diproses sebagai HTML, bukan string biasa -->
                         <td>{!! $item->badgeKategori() !!}</td>
@@ -66,14 +72,17 @@
                               <a class="dropdown-item" href="{{ route('produk.edit', $item->id) }}">
                                 <i class="bx bx-edit-alt me-1"></i> Edit
                               </a>
-                              <form action="{{ route('produk.destroy', $item->id) }}" method="POST" style="display: inline;">
+                              
+                              <form action="{{ route('produk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus produk ini?')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure?')">
-                                  <i class="bx bx-trash me-1"></i> Delete
+                                <button type="submit" class="dropdown-item">
+                                  <i class="bx bx-trash me-1"></i> Hapus
                                 </button>
                               </form>
                             </div>
+                          </div> 
+                        </td>
                           </div>
                         </td>
                       </tr>
