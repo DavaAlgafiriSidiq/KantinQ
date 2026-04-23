@@ -31,6 +31,19 @@ class ProdukController extends Controller
         return view('session-seller.seller-form-new-produk');
     }
 
+    public function SearchProduk(Request $request)
+{
+    $search = $request->search;
+
+    if ($search) {
+        $produk = produk::where('name', 'like', "%$search%")->get();
+    } else {
+        $produk = produk::all();
+    }
+
+    return view('session-seller.seller-produk', compact('produk'));
+}
+
     /**
      * Store a newly created resource in storage.
      */
