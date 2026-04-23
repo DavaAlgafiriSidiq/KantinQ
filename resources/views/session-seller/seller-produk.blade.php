@@ -30,6 +30,17 @@
                       </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
+                      @if($produk->isEmpty())
+                        <tr>
+                          <td colspan="7" class="text-center">
+                            @if(request('search'))
+                              Produk "{{ request('search') }}" tidak ditemukan
+                            @else
+                              Data produk belum ada
+                            @endif
+                          </td>
+                        </tr>
+                      @else
                       @foreach ($produk as $item)
                       <tr>
                         <td>
@@ -87,6 +98,7 @@
                         </td>
                       </tr>
                       @endforeach
+                      @endif
                     </tbody>
                   </table>
                 </div>

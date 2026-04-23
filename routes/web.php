@@ -27,6 +27,9 @@ Route::middleware('auth:seller')->controller(AkunSellerController::class)->group
     Route::delete('/seller-hapus-produk/{id}', [ProdukController::class, 'destroy'])->name('produk.destroy');
 });
 
+//search menu produk
+Route::get('/SearchProduk', [ProdukController::class, 'SearchProduk']);
+
 // Tampilan Login Untuk Seller
 Route::middleware('guest:seller')->controller(AkunSellerController::class)->group(function () {
     Route::get('/seller-login', 'sellerLogin')->name('login-seller');
