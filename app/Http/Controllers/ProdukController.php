@@ -122,6 +122,7 @@ class ProdukController extends Controller
             'deskripsi'   => 'required',
             'harga'       => 'required|numeric',
             'stok'        => 'required|numeric',
+            'status'      => 'required|in:available,unavailable',
             'foto_produk' => 'image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
@@ -136,19 +137,13 @@ class ProdukController extends Controller
             $produk->id_kategori = $request->id_kategori;
             $produk->deskripsi = $request->deskripsi;
             $produk->harga = $request->harga;
-            $produk->stok = $request->stok;
-
-            if ($request->hasFile('foto_produk')) {
-                // Hapus gambar lama dari folder public
-                if ($produk->foto_produk && file_exists(public_path($produk->foto_produk))) {
-                    unlink(public_path($produk->foto_produk));
+            if ($request->status == 'unavailable') {
+                    $produk->stok = 0;
+                    $produk->status = 'unavailable';
+                } else {
+                    $produk->stok = $request->stok;
+                    $produk->status = 'available';
                 }
-                
-                $file = $request->file('foto_produk');
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('images'), $filename);
-                $produk->foto_produk = '/images/' . $filename;
-            }
 
             $produk->save();
             DB::commit();

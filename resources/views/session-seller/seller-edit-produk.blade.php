@@ -71,6 +71,17 @@
                                 </div>
                             </div>
 
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label">Status</label>
+                                <div class="col-sm-10">
+                                    <select name="status" class="form-select @error('status') is-invalid @enderror" required>
+                                        <option value="available" {{ old('status', $produk->status) == 'Ditampilkan' ? 'selected' : '' }}>Available</option>
+                                        <option value="unavailable" {{ old('status', $produk->status) == 'Diarsipkan' ? 'selected' : '' }}>Unavailable</option>
+                                    </select>
+                                    @error('status') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                </div>
+                            </div>
+
                             <div class="mb-4 pb-4 border-bottom">
                                 <h5 class="mb-3">Foto Produk</h5>
                                 <div class="row mb-3">
