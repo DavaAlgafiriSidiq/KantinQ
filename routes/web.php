@@ -4,6 +4,7 @@ use App\Http\Controllers\AkunSellerController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ProdukController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\dashboardSeller;
 
 Route::get('/', function () {
     return view('welcome');
@@ -36,5 +37,12 @@ Route::middleware('guest:seller')->controller(AkunSellerController::class)->grou
     Route::post('/seller-login', 'sellerLogins');
 });
 
+// Membuat URL khusus untuk dashboard seller
+Route::get('/dashboard-seller', [dashboardSeller::class, 'index']);
+
+// Route untuk mengubah status toko
+Route::post('/dashboard-seller/toggle-status/{id}', [dashboardSeller::class, 'toggleStatus'])->name('seller.toggle-status');
+
 // Untuk Logout Seller
 Route::post('/seller-logout', [AkunSellerController::class, 'sellerLogout']);
+

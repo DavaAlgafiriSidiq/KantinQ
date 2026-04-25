@@ -9,12 +9,23 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class DashboardController extends Controller
+
+class dashboardSeller extends Controller
 {
-    public function index()
+   public function index()
     {
         $today = Carbon::today();
-        $storeId = 1; // Contoh ID toko, nantinya bisa diambil dari session/auth
+        $storeId = 1; // Contoh ID toko
+
+        $riwayatPesanan = Order::with('user')
+            ->where('store_id', $storeId)
+            ->orderBy('created_at', 'desc') // Urutkan dari yang terbaru
+            ->get();
+
+        $toko = Store::find($storeId);
+        $isTokoBuka = $toko->is_open;
+
+        
 
         // AC 1: Total pendapatan hari ini
         $totalPendapatan = Order::where('store_id', $storeId)
@@ -38,23 +49,27 @@ class DashboardController extends Controller
             ->limit(3)
             ->get();
 
-        // AC 6: Hitung pesanan berdasarkan status
-        $statusCounts = Order::where('store_id', $storeId)
-            ->select('status', DB::raw('count(*) as total'))
-            ->groupBy('status')
-            ->pluck('total', 'status');
+        // AC 6: Hitung pesanan berdasarkan status (INI YANG DIPERBAIKI)
+        $pesananBaru = Order::where('store_id', $storeId)->where('status', 'baru')->count();
+        $pesananDiproses = Order::where('store_id', $storeId)->where('status', 'diproses')->count();
+        $pesananSiap = Order::where('store_id', $storeId)->where('status', 'siap_diambil')->count();
 
+        // Ambil data toko & Status Buka/Tutup
         $toko = Store::find($storeId);
+        $isTokoBuka = $toko->is_open;
 
-        return view('seller.dashboard', compact(
+        return view('master', compact(
             'totalPendapatan', 
             'pesananSelesai', 
-            'topMenus', 
-            'statusCounts', 
-            'toko'
+            'pesananBaru',
+            'pesananDiproses',
+            'pesananSiap',
+            'isTokoBuka',
+            'topMenus',
+            'toko',
+            'riwayatPesanan'
         ));
     }
-
     // Fungsi untuk Switch Buka/Tutup Toko
     public function toggleStatus(Request $request, $id)
     {
