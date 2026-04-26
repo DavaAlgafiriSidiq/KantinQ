@@ -16,14 +16,24 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [RegisterController::class, 'processRegistration']);
 });
 
-// Tampilan Untuk Seller (Dashboard)
+// Tampilan Untuk Seller (Dashboard & Profil)
 Route::middleware('auth:seller')->controller(AkunSellerController::class)->group(function () {
+    
     // SELLER (DASHBOARD)
     Route::get('/seller', 'sellerMain');
+    
+    // --- FITUR PROFIL SELLER ---
+    Route::get('/seller/profil', 'indexProfil')->name('profil-seller.index');
+    Route::get('/seller/profil/edit', 'editProfil')->name('profil-seller.edit');
+    Route::put('/seller/profil/update', 'updateProfil')->name('profil-seller.update');
+    // ---------------------------
+
     Route::get('/seller-produk', [ProdukController::class, 'index'])->name('produk.index');
     Route::get('/seller-tambah-produk', [ProdukController::class, 'create'])->name('produk.create');
     Route::get('/seller-edit-produk/{id}', [ProdukController::class, 'edit'])->name('produk.edit');
     Route::put('/seller-update-produk/{id}', [ProdukController::class, 'update'])->name('produk.update');
+
+    // Perbaikan: Gunakan ProdukController::class agar konsisten
     Route::post('/seller-simpan-produk', [ProdukController::class, 'simpan'])->name('produk.simpan');
     Route::delete('/seller-hapus-produk/{id}', [ProdukController::class, 'destroy'])->name('produk.destroy');
 });
@@ -45,4 +55,3 @@ Route::post('/dashboard-seller/toggle-status/{id}', [dashboardSeller::class, 'to
 
 // Untuk Logout Seller
 Route::post('/seller-logout', [AkunSellerController::class, 'sellerLogout']);
-
