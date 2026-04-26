@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\profilSeller;
 use Illuminate\Support\Facades\Storage;
+use App\Models\AkunSellerModel;
 
 
 class ProfilSellerController extends Controller {

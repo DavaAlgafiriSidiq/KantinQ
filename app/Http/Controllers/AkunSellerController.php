@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use App\Models\AkunSellerModel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Storage; // Tambahkan ini agar tidak error saat update foto
 
 class AkunSellerController extends Controller
 {
@@ -50,5 +52,51 @@ class AkunSellerController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/seller-login');
+    }
+
+    // --- Tambahan Fungsi Profil ---
+
+    // Tampil Profil
+    public function indexProfil() 
+    {
+        $seller = Auth::guard('seller')->user();
+        return view('session-seller.profil-seller.index', compact('seller'));
+    }
+
+    // Edit Profil
+    public function editProfil()
+    {
+        $user = Auth::guard('seller')->user(); 
+        return view('session-seller.profil-seller.edit', compact('user'));
+    }
+
+    // Update Profil
+    public function updateProfil(Request $request) 
+    {
+        $user = Auth::guard('seller')->user();
+        $akun = AkunSellerModel::find($user->id);
+
+        $request->validate([
+            'nama_toko' => 'required|string|max:255',
+            'nomor_hp' => 'required|string|max:20',
+            'deskripsi_toko' => 'nullable|string',
+            'foto_profil' => 'nullable|image|mimes:jpeg,png,jpg|max:800',
+        ]);
+
+        $akun->nama_toko = $request->nama_toko;
+        $akun->nomor_hp = $request->nomor_hp;
+        $akun->deskripsi_toko = $request->deskripsi_toko;
+
+        if ($request->hasFile('foto_profil')) {
+            if ($akun->foto_profil && Storage::disk('public')->exists($akun->foto_profil)) {
+                Storage::disk('public')->delete($akun->foto_profil);
+            }
+            $path = $request->file('foto_profil')->store('profil-seller', 'public');
+            $akun->foto_profil = $path;
+        }
+
+        $akun->save(); 
+
+        return redirect()->route('profil-seller.index')->with('success', 'Profil berhasil diperbarui!');
     }
 }
