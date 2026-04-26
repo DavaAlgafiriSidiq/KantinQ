@@ -42,18 +42,15 @@
       rel="stylesheet"
     />
 
-    <!-- Icons. Uncomment required icon fonts -->
-    <link rel="stylesheet" href="../assets/vendor/fonts/boxicons.css" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/boxicons.css') }}" />
 
-    <!-- Core CSS -->
-    <link rel="stylesheet" href="../assets/vendor/css/core.css" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="../assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
-    <link rel="stylesheet" href="../assets/css/demo.css" />
+<link rel="stylesheet" href="{{ asset('assets/vendor/css/core.css') }}" class="template-customizer-core-css" />
+<link rel="stylesheet" href="{{ asset('assets/vendor/css/theme-default.css') }}" class="template-customizer-theme-css" />
+<link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
 
-    <!-- Vendors CSS -->
-    <link rel="stylesheet" href="../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+<link rel="stylesheet" href="{{ asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
 
-    <link rel="stylesheet" href="../assets/vendor/libs/apex-charts/apex-charts.css" />
+<link rel="stylesheet" href="{{ asset('assets/vendor/libs/apex-charts/apex-charts.css') }}" />
 
     <!-- Page CSS -->
 
@@ -185,31 +182,32 @@
             </li>
 
             <li class="menu-header small text-uppercase">
-              <span class="menu-header-text">Pages</span>
-            </li>
-            <li class="menu-item">
-              <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-dock-top"></i>
-                <div data-i18n="Account Settings">Account Settings</div>
-              </a>
-              <ul class="menu-sub">
-                <li class="menu-item">
-                  <a href="pages-account-settings-account.html" class="menu-link">
-                    <div data-i18n="Account">Account</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="pages-account-settings-notifications.html" class="menu-link">
-                    <div data-i18n="Notifications">Notifications</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="pages-account-settings-connections.html" class="menu-link">
-                    <div data-i18n="Connections">Connections</div>
-                  </a>
-                </li>
-              </ul>
-            </li>
+  <span class="menu-header-text">Pages</span>
+</li>
+<li class="menu-item {{ Request::is('seller/profil*') ? 'active open' : '' }}">
+  <a href="javascript:void(0);" class="menu-link menu-toggle">
+    <i class="menu-icon tf-icons bx bx-dock-top"></i>
+    <div data-i18n="Account Settings">Account Settings</div>
+  </a>
+  <ul class="menu-sub">
+    <li class="menu-item {{ Request::routeIs('profil-seller.index') ? 'active' : '' }}">
+      <a href="{{ route('profil-seller.index') }}" class="menu-link">
+        <div data-i18n="Account">Account</div>
+      </a>
+    </li>
+    
+    <li class="menu-item">
+      <a href="pages-account-settings-notifications.html" class="menu-link">
+        <div data-i18n="Notifications">Notifications</div>
+      </a>
+    </li>
+    <li class="menu-item">
+      <a href="pages-account-settings-connections.html" class="menu-link">
+        <div data-i18n="Connections">Connections</div>
+      </a>
+    </li>
+  </ul>
+</li>
             <li class="menu-item">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
@@ -253,11 +251,11 @@
             </li>
             <!-- Components -->
             <li class="menu-header small text-uppercase"><span class="menu-header-text">Components</span></li>
-            <!-- Manajemen Produk -->
+            <!-- Cards -->
             <li class="menu-item">
-              <a href="/seller-produk" class="menu-link">
+              <a href="cards-basic.html" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-collection"></i>
-                <div data-i18n="Basic">Tabel Produk</div>
+                <div data-i18n="Basic">Cards</div>
               </a>
             </li>
             <!-- User interface -->
@@ -480,44 +478,43 @@
 
             <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
               <!-- Search -->
-              <form method="GET" action="/SearchProduk">
-                <div class="navbar-nav align-items-center">
-                  <div class="nav-item d-flex align-items-center">
-                    
-                    <i class="bx bx-search fs-4 lh-0"></i>
-
-                    <input
-                      type="text"
-                      id="searchInput"
-                      name="search"
-                      class="form-control border-0 shadow-none"
-                      placeholder="Search..."
-                      value="{{ request('search') }}"
-                    />
-                    <i 
-                      class="bx bx-x"
-                      id="clearBtn"
-                      style="position:absolute; right:5px; top:50%; transform:translateY(-50%); cursor:pointer; display:none;"
-                    ></i>
-                  </div>
+              <div class="navbar-nav align-items-center">
+                <div class="nav-item d-flex align-items-center">
+                  <i class="bx bx-search fs-4 lh-0"></i>
+                  <input
+                    type="text"
+                    class="form-control border-0 shadow-none"
+                    placeholder="Search..."
+                    aria-label="Search..."
+                  />
                 </div>
-              </form>
+              </div>
               <!-- /Search -->
 
               <ul class="navbar-nav flex-row align-items-center ms-auto">
                 <!-- Place this tag where you want the button to render. -->
                 <li class="nav-item lh-1 me-3">
-                  <a href="/SearchProduk" style="font-size:20px; text-decoration:none;">
-                    X
-                  </a>
+                  <a
+                    class="github-button"
+                    href="https://github.com/themeselection/sneat-html-admin-template-free"
+                    data-icon="octicon-star"
+                    data-size="large"
+                    data-show-count="true"
+                    aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
+                    >Star</a
+                  >
                 </li>
 
                 <!-- User -->
                 <li class="nav-item navbar-dropdown dropdown-user dropdown">
                   <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">
-                      <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
-                    </div>
+                    <img 
+                      src="{{ Auth::guard('seller')->user()->foto_profil ? asset('storage/' . Auth::guard('seller')->user()->foto_profil) : asset('assets/img/avatars/1.png') }}" 
+                      alt="user-avatar" 
+                      class="w-px-40 h-auto rounded-circle" 
+                      style="object-fit: cover; width: 40px; height: 40px;" 
+                    />                    </div>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end">
                     <li>
@@ -525,8 +522,12 @@
                         <div class="d-flex">
                           <div class="flex-shrink-0 me-3">
                             <div class="avatar avatar-online">
-                              <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                            <div class="avatar avatar-online">
+                                <img src="{{ Auth::guard('seller')->user()->foto_profil ? asset('storage/' . Auth::guard('seller')->user()->foto_profil) : asset('assets/img/avatars/1.png') }}" 
+                                    class="w-px-40 h-auto rounded-circle" 
+                                    style="object-fit: cover; width: 40px; height: 40px;" />
                             </div>
+                         </div>
                           </div>
                           <div class="flex-grow-1">
                             <span class="fw-semibold d-block">John Doe</span>
@@ -563,10 +564,15 @@
                       <div class="dropdown-divider"></div>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="auth-login-basic.html">
-                        <i class="bx bx-power-off me-2"></i>
-                        <span class="align-middle">Log Out</span>
-                      </a>
+                      <a class="dropdown-item" href="javascript:void(0);" 
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                              <i class="bx bx-power-off me-2"></i>
+                              <span class="align-middle">Log Out</span>
+                          </a>
+
+                          <form id="logout-form" action="{{ route('seller.logout') }}" method="POST" style="display: none;">
+                              @csrf
+                          </form>
                     </li>
                   </ul>
                 </li>
@@ -581,6 +587,7 @@
           <div class="content-wrapper">
             <!-- Content -->
             @yield('content')
+
             <!-- / Content -->
 
             <!-- Footer -->

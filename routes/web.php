@@ -53,5 +53,5 @@ Route::get('/dashboard-seller', [dashboardSeller::class, 'index']);
 // Route untuk mengubah status toko
 Route::post('/dashboard-seller/toggle-status/{id}', [dashboardSeller::class, 'toggleStatus'])->name('seller.toggle-status');
 
-// Untuk Logout Seller
-Route::post('/seller-logout', [AkunSellerController::class, 'sellerLogout']);
+// UNTUK LOGOUT SELLER 
+Route::post('/seller-logout', [AkunSellerController::class, 'sellerLogout'])->name('seller.logout');
