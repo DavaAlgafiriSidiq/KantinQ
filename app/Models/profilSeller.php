@@ -12,4 +12,4 @@ class ProfilSeller extends Model
     public $incrementing = false; 
 
     protected $fillable = ['id', 'nama_toko', 'deskripsi_toko', 'nomor_hp'];
-}   
+}
