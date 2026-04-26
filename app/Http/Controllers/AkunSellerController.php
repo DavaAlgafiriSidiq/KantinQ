@@ -7,7 +7,7 @@ use App\Models\AkunSellerModel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Storage; // Tambahkan ini agar tidak error saat update foto
+use Illuminate\Support\Facades\Storage;
 
 class AkunSellerController extends Controller
 {
