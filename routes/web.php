@@ -9,19 +9,22 @@ use App\Http\Controllers\dashboardSeller;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/landing', function () {
+    return view('landing');
+});
 
 // REGISTRASI UMUM (Customer & Seller)
 Route::middleware('guest')->group(function () {
-    Route::get('/register', [RegisterController::class, 'showRegistrationForm']);
+    Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [RegisterController::class, 'processRegistration']);
 });
 
 // Tampilan Untuk Seller (Dashboard & Profil)
 Route::middleware('auth:seller')->controller(AkunSellerController::class)->group(function () {
-    
+
     // SELLER (DASHBOARD)
     Route::get('/seller', 'sellerMain');
-    
+
     // --- FITUR PROFIL SELLER ---
     Route::get('/seller/profil', 'indexProfil')->name('profil-seller.index');
     Route::get('/seller/profil/edit', 'editProfil')->name('profil-seller.edit');
