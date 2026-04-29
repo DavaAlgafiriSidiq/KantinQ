@@ -51,13 +51,13 @@ class AkunSellerController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/seller-login');
+        return redirect('/landing');
     }
 
     // --- Tambahan Fungsi Profil ---
 
     // Tampil Profil
-    public function indexProfil() 
+    public function indexProfil()
     {
         $seller = Auth::guard('seller')->user();
         return view('session-seller.profil-seller.index', compact('seller'));
@@ -66,12 +66,12 @@ class AkunSellerController extends Controller
     // Edit Profil
     public function editProfil()
     {
-        $user = Auth::guard('seller')->user(); 
+        $user = Auth::guard('seller')->user();
         return view('session-seller.profil-seller.edit', compact('user'));
     }
 
     // Update Profil
-    public function updateProfil(Request $request) 
+    public function updateProfil(Request $request)
     {
         $user = Auth::guard('seller')->user();
         $akun = AkunSellerModel::find($user->id);
@@ -95,7 +95,7 @@ class AkunSellerController extends Controller
             $akun->foto_profil = $path;
         }
 
-        $akun->save(); 
+        $akun->save();
 
         return redirect()->route('profil-seller.index')->with('success', 'Profil berhasil diperbarui!');
     }
