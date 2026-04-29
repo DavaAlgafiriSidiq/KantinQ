@@ -6,10 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProfilSeller extends Model
 {
-    protected $table = 'profil_sellers'; 
+    protected $table = 'profil_sellers';
 
     protected $primaryKey = 'id';
-    public $incrementing = false; 
 
-    protected $fillable = ['id', 'nama_toko', 'deskripsi_toko', 'nomor_hp'];
+    public $incrementing = false;
+
+    protected $fillable = [
+        'id', 
+        'nama_toko', 
+        'deskripsi_toko', 
+        'nomor_hp', 
+        'foto_profil' 
+    ];
+
+    
+    public function akunSeller()
+    {
+        return $this->belongsTo(AkunSeller::class, 'id', 'id');
+    }
 }

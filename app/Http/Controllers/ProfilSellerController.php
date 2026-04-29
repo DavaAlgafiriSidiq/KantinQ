@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\profilSeller;
-use Illuminate\Support\Facades\Storage;
 use App\Models\AkunSellerModel;
-
+use Illuminate\Support\Facades\DB;
 
 class ProfilSellerController extends Controller {
 
@@ -16,50 +14,61 @@ class ProfilSellerController extends Controller {
         return view('profilSeller.index', compact('user')); 
     }
 
-        public function edit()
-    {
+    public function edit() {
         $user = Auth::guard('seller')->user();
-
-        // Jika user tidak ditemukan, arahkan ke login 
         if (!$user) {
             return redirect('/seller-login')->with('error', 'Sesi habis, silakan login kembali.');
         }
         return view('profilSeller.edit', compact('user'));
     }
 
-        public function updateProfil(Request $request) {
-    $seller = Auth::guard('seller')->user();
-    
-    $request->validate([
-        'nama_toko' => 'required|string|max:255',
-        'nomor_hp' => 'required|string|max:15',
-        'deskripsi_toko' => 'nullable|string',
-        'foto_profil' => 'nullable|image|mimes:jpeg,png,jpg|max:800', // Validasi foto
-    ]);
-
-    $akun = AkunSellerModel::find($seller->id);
-    
-    // Data teks
-    $data = [
-        'nama_toko' => $request->nama_toko,
-        'nomor_hp' => $request->nomor_hp,
-        'deskripsi_toko' => $request->deskripsi_toko,
-    ];
-
-    // LOGIKA FOTO 
-    if ($request->hasFile('foto_profil')) {
-        // menghapus foto lama jika ada
-        if ($akun->foto_profil) {
-            Storage::disk('public')->delete($akun->foto_profil);
-        }
+    public function updateProfil(Request $request) {
+        $seller = Auth::guard('seller')->user();
         
-        // Simpan foto baru ke folder storage/app/public/profil-seller
-        $path = $request->file('foto_profil')->store('profil-seller', 'public');
-        $data['foto_profil'] = $path;
+        // VALIDASI: nomor_hp numeric & foto_profil max 2MB (2048 KB)
+        $request->validate([
+            'nama_toko'      => 'required',
+            'nomor_hp'       => 'required|numeric', 
+            'deskripsi_toko' => 'required',
+            'foto_profil'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048', 
+        ], [
+            // KETERANGAN ERROR CUSTOM (Sesuai permintaanmu)
+            'nomor_hp.numeric'  => 'Nomor WhatsApp wajib berupa angka saja!',
+            'foto_profil.max'   => 'Foto melebihi batas maksimal (Maks. 2MB)!',
+            'foto_profil.image' => 'File harus berupa gambar (JPG, JPEG, PNG).',
+        ]);
+
+        $akun = AkunSellerModel::find($seller->id);
+        
+        DB::beginTransaction();
+        try {
+            $akun->nama_toko = $request->nama_toko;
+            $akun->nomor_hp = $request->nomor_hp; 
+            $akun->deskripsi_toko = $request->deskripsi_toko;
+
+            if ($request->hasFile('foto_profil')) {
+                if ($akun->foto_profil && file_exists(public_path($akun->foto_profil))) {
+                    unlink(public_path($akun->foto_profil));
+                }
+                
+                $file = $request->file('foto_profil');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                
+                // Simpan ke folder public/images/profil
+                $file->move(public_path('images/profil'), $filename);
+                
+                // Simpan path relatif ke DB agar asset() bisa membacanya
+                $akun->foto_profil = 'images/profil/' . $filename;
+            }
+
+            $akun->save();
+            DB::commit();
+
+            return redirect()->route('profil-seller.index')->with('success', 'Profil berhasil diperbarui!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Gagal update: ' . $e->getMessage());
+        }
     }
-
-    $akun->update($data);
-
-    return redirect()->route('profil-seller.index')->with('success', 'Profil berhasil diperbarui!');
-}
 }
