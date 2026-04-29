@@ -39,7 +39,7 @@ class ProdukController extends Controller
     $search = $request->search;
 
     if ($search) {
-        $produk = produk::where('name', 'like', "%$search%")->get();
+        $produk = produk::where('nama_produk', 'like', "%$search%")->get();
     } else {
         $produk = produk::all();
     }
