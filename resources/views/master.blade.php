@@ -1,16 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Seller - KantinQ</title>
-    
-    <link rel="stylesheet" href="{{ asset('assets-dashboard/vendor/css/core.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets-dashboard/vendor/css/theme-default.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets-dashboard/vendor/fonts/boxicons.css') }}" />
-</head>
-<body>
+@extends('session-seller.layout-seller') 
 
+@section('content')
     <div class="content-wrapper">
         <div class="container-xxl flex-grow-1 container-p-y">
             
@@ -174,5 +164,4 @@
     <script src="{{ asset('assets-dashboard/vendor/js/bootstrap.js') }}"></script>
     <script src="{{ asset('assets-dashboard/js/main.js') }}"></script>
 
-</body>
-</html>
+@endsection
