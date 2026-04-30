@@ -144,7 +144,22 @@ class ProdukController extends Controller
                     $produk->stok = $request->stok;
                     $produk->status = 'available';
                 }
+                // update foto produk, jika ada file baru yang diupload
+            if ($request->hasFile('foto_produk'))
+                {
+                    // 1. Hapus foto lama jika ada
+                if ($produk->foto_produk && file_exists(public_path($produk->foto_produk))) {
+                    unlink(public_path($produk->foto_produk));
+                }
 
+                    // 2. Upload foto baru
+                    $file = $request->file('foto_produk');
+                    $filename = time() . '_' . $file->getClientOriginalName();
+                    $file->move(public_path('images'), $filename);
+                    
+                    // 3. Update path di database
+                    $produk->foto_produk = '/images/' . $filename;
+                }
             $produk->save();
             DB::commit();
 
