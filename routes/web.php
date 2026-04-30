@@ -21,7 +21,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth:seller')->controller(AkunSellerController::class)->group(function () {
 
     // SELLER (DASHBOARD)
-    Route::get('/seller', 'master.blade');
+    Route::get('/seller', [dashboardSeller::class, 'index']);
 
     // --- FITUR PROFIL SELLER ---
     Route::get('/seller/profil', 'indexProfil')->name('profil-seller.index');
@@ -48,8 +48,7 @@ Route::middleware('guest:seller')->controller(AkunSellerController::class)->grou
     Route::post('/seller-login', 'sellerLogins');
 });
 
-// URL khusus untuk dashboard seller
-Route::get('/dashboard-seller', [dashboardSeller::class, 'index']);
+
 
 // Route untuk mengubah status toko
 Route::post('/dashboard-seller/toggle-status/{id}', [dashboardSeller::class, 'toggleStatus'])->name('seller.toggle-status');
