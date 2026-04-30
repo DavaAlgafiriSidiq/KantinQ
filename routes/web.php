@@ -21,7 +21,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth:seller')->controller(AkunSellerController::class)->group(function () {
 
     // SELLER (DASHBOARD)
-    Route::get('/seller', 'sellerMain');
+    Route::get('/seller', 'master.blade');
 
     // --- FITUR PROFIL SELLER ---
     Route::get('/seller/profil', 'indexProfil')->name('profil-seller.index');
