@@ -7,10 +7,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+// [UPDATE] Mengubah nama class dari User menjadi AkunCustomer agar tim lebih mengerti peruntukannya.
+class AkunCustomer extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+
+    // [UPDATE] Menambahkan $table = 'users' karena kita mengubah nama Model, 
+    // tetapi kita tetap ingin menggunakan tabel bawaan Laravel yaitu 'users' untuk autentikasi.
+    protected $table = 'users';
 
     /**
      * The attributes that are mass assignable.
@@ -19,6 +24,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        // Menyimpan nomor handphone customer
+        'nomor_handphone', 
         'email',
         'password',
     ];

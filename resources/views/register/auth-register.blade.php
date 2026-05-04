@@ -27,26 +27,29 @@
                 </div>
             @endif
 
-            <!-- Pilihan role (customer saat ini dinonaktifkan) -->
+            <!-- Pilihan role -->
             <div class="mb-3">
                 <label class="form-label d-block fw-bold">Mendaftar Sebagai:</label>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="role" id="roleCustomer" value="customer"
-                        disabled>
-                    <label class="form-check-label text-muted" for="roleCustomer">
-                        Customer <small>(Segera Hadir)</small>
-                    </label>
+                    <input class="form-check-input role-radio" type="radio" name="role" id="roleCustomer" value="customer" required>
+                    <label class="form-check-label" for="roleCustomer">Customer</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="role" id="roleSeller" value="seller" required>
+                    <input class="form-check-input role-radio" type="radio" name="role" id="roleSeller" value="seller" required>
                     <label class="form-check-label" for="roleSeller">Seller (Penjual)</label>
                 </div>
             </div>
 
-            <!-- // Input untuk nama toko atau nama lengkap -->
+            <!-- Input untuk nama (Dinamis via JS) -->
             <div class="mb-3">
-                <label class="form-label">Nama Toko / Nama Lengkap</label>
-                <input type="text" name="username" class="form-control" required>
+                <label class="form-label" id="label-username">Nama Lengkap</label>
+                <input type="text" name="username" id="username" class="form-control" required>
+            </div>
+
+            <!-- Input nomor HP (Dinamis via JS) -->
+            <div class="mb-3" id="wrapper-nohp" style="display: none;">
+                <label class="form-label" id="label-nohp">Nomor Handphone</label>
+                <input type="text" name="nomor_handphone" id="nomor_handphone" class="form-control">
             </div>
 
             <div class="mb-3">
@@ -70,10 +73,48 @@
 
         <!-- Link untuk login jika sudah punya akun -->
         <div class="text-center mt-3">
-            <small>Sudah punya akun? <a href="/seller-login">Login di sini</a></small>
+            <small>Sudah punya akun? <br>
+                <a href="/login">Login Customer</a> | <a href="/seller-login">Login Seller</a>
+            </small>
         </div>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const roleRadios = document.querySelectorAll('.role-radio');
+            const labelUsername = document.getElementById('label-username');
+            const wrapperNoHp = document.getElementById('wrapper-nohp');
+            const labelNoHp = document.getElementById('label-nohp');
+            // Element input dinamis untuk nomor handphone/whatsapp
+            const inputNoHp = document.getElementById('nomor_handphone');
+
+            roleRadios.forEach(radio => {
+                radio.addEventListener('change', function () {
+                    if (this.value === 'customer') {
+                        labelUsername.textContent = 'Nama Pribadi';
+                        wrapperNoHp.style.display = 'block';
+                        labelNoHp.textContent = 'Nomor Handphone';
+                        // Menyesuaikan name input untuk tabel users
+                        inputNoHp.name = 'nomor_handphone';
+                        inputNoHp.required = true;
+                    } else if (this.value === 'seller') {
+                        labelUsername.textContent = 'Nama Toko';
+                        wrapperNoHp.style.display = 'block';
+                        labelNoHp.textContent = 'Nomor WhatsApp';
+                        // Menyesuaikan name input untuk tabel seller
+                        inputNoHp.name = 'nomor_hp';
+                        inputNoHp.required = true;
+                    }
+                });
+            });
+            
+            // Trigger change if already selected (e.g., after validation error)
+            const checkedRadio = document.querySelector('.role-radio:checked');
+            if(checkedRadio) {
+                checkedRadio.dispatchEvent(new Event('change'));
+            }
+        });
+    </script>
 </body>
 
 </html>

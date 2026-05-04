@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Seller - KantinQ</title>
+    <title>Login Customer - KantinQ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body class="bg-light d-flex align-items-center justify-content-center" style="height: 100vh;">
 
     <div class="card shadow p-4" style="width: 100%; max-width: 400px;">
-        <h3 class="text-center mb-4">Login Seller</h3>
+        <h3 class="text-center mb-4">Login Customer</h3>
 
         @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -30,24 +30,27 @@
             </div>
         @endif
 
-        <form action="/seller-login" method="POST">
+        <form action="/login" method="POST">
             @csrf
 
             <div class="mb-3">
                 <label class="form-label">Email</label>
-                <input type="email" name="email" class="form-control" required>
+                <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
             </div>
 
             <div class="mb-4">
                 <label class="form-label">Password</label>
-                <input type="password" name="password" class="form-control" required>
+                <input type="password" name="password" class="form-control" minlength="8" required>
             </div>
 
-            <button type="submit" class="btn btn-success w-100">Masuk</button>
+            <button type="submit" class="btn btn-primary w-100">Masuk</button>
         </form>
 
         <div class="text-center mt-3">
             <small>Belum punya akun? <a href="/register">Daftar di sini</a></small>
+        </div>
+        <div class="text-center mt-1">
+            <small><a href="/seller-login" class="text-muted">Login sebagai Seller</a></small>
         </div>
     </div>
 

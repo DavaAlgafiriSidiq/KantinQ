@@ -54,15 +54,49 @@
                                 class="fas fa-map-marker-alt text-warning mx-2"></i><span class="fw-normal">Current
                                 Location </span><span>Mirpur 1 Bus Stand, Dhaka</span></p>
                     </div>
-                    <form class="d-flex mt-4 mt-lg-0 ms-lg-auto ms-xl-0">
+                    <div class="d-flex mt-4 mt-lg-0 ms-lg-auto ms-xl-0">
                         <div class="input-group-icon pe-2"><i class="fas fa-search input-box-icon text-primary"></i>
                             <input class="form-control border-0 input-box bg-100" type="search"
                                 placeholder="Search Food" aria-label="Search" />
                         </div>
-                        <a href="{{ route('register') }}" class="btn btn-white shadow-warning text-warning">
-                            <i class="fas fa-user me-2"></i>Register
-                        </a>
-                    </form>
+                        @if(Auth::guard('seller')->check())
+                            <div class="dropdown">
+                                <button class="btn btn-white shadow-warning text-warning dropdown-toggle" type="button" id="dropdownSeller" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user me-2"></i>{{ Auth::guard('seller')->user()->username }}
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownSeller">
+                                    <li><a class="dropdown-item" href="{{ route('master') }}">Dashboard</a></li>
+                                    <li>
+                                        <form action="{{ route('seller.logout') }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="dropdown-item text-danger">Logout</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        @elseif(Auth::check())
+                            <div class="dropdown">
+                                <button class="btn btn-white shadow-warning text-warning dropdown-toggle" type="button" id="dropdownCustomer" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user me-2"></i>{{ Auth::user()->name }}
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownCustomer">
+                                    <li>
+                                        <form action="{{ route('logout') }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="dropdown-item text-danger">Logout</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        @else
+                            <a href="{{ route('login') }}" class="btn btn-white shadow-warning text-warning me-2">
+                                <i class="fas fa-sign-in-alt me-2"></i>Login
+                            </a>
+                            <a href="{{ route('register') }}" class="btn btn-white shadow-warning text-warning">
+                                <i class="fas fa-user me-2"></i>Register
+                            </a>
+                        @endif
+                    </div>
                 </div>
             </div>
         </nav>

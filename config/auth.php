@@ -66,9 +66,9 @@ return [
     */
 
     'providers' => [
-        'user' => [
+        'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
+            'model' => env('AUTH_MODEL', App\Models\AkunCustomer::class),
         ],
         'sellers' => [
             'driver' => 'eloquent',
