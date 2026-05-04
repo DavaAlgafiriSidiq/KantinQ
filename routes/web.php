@@ -17,20 +17,20 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [RegisterController::class, 'processRegistration']);
 });
 
-// LOGIN CUSTOMER (PBI-003)
+// LOGIN CUSTOMER
 Route::middleware('guest')->group(function () {
     Route::get('/login', [\App\Http\Controllers\CustomerAuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [\App\Http\Controllers\CustomerAuthController::class, 'login']);
 });
 
-// LOGOUT CUSTOMER (PBI-020)
+// LOGOUT CUSTOMER
 Route::post('/logout', [\App\Http\Controllers\CustomerAuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 // Tampilan Untuk Seller (Dashboard & Profil)
 Route::middleware('auth:seller')->controller(AkunSellerController::class)->group(function () {
 
     // SELLER (DASHBOARD)   
-    Route::get('/seller', [dashboardSeller::class, 'index'])->name('master');       
+    Route::get('/seller', [dashboardSeller::class, 'index'])->name('master');
 
     // --- FITUR PROFIL SELLER ---
     Route::get('/seller/profil', 'indexProfil')->name('profil-seller.index');
