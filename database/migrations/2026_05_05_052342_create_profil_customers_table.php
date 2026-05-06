@@ -7,17 +7,18 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     public function up(): void
-    {
-        Schema::create('profil_customers', function (Blueprint $table) {
-            $table->unsignedBigInteger('id')->primary(); 
-            $table->string('name');
-            $table->string('phone')->nullable();
-            $table->string('foto')->nullable();
-            $table->timestamps();
+{
+    Schema::create('profil_customers', function (Blueprint $table) {
+        $table->id(); 
+        $table->unsignedBigInteger('user_id')->unique(); // PASTIKAN ADA BARIS INI
+        $table->string('name');
+        $table->string('phone')->nullable();
+        $table->string('foto')->nullable();
+        $table->timestamps();
 
-            $table->foreign('id')->references('id')->on('users')->onDelete('cascade');
-        });
-    }
+        $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+    });
+}
 
     public function down(): void
     {

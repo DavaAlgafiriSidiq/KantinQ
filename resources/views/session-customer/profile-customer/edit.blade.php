@@ -1,4 +1,4 @@
-@extends('landing')
+@extends('session-customer.profile-customer.landing')
 
 @section('content')
 <div class="container py-5">

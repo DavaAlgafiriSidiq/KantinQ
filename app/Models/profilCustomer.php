@@ -4,19 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ProfilCustomer extends Model {
+class ProfilCustomer extends Model 
+{
     protected $table = 'profil_customers';
-    protected $primaryKey = 'id'; 
-    public $incrementing = false;
-
+    
     protected $fillable = [
-        'id', 
+        'user_id', 
         'name', 
         'phone', 
         'foto' 
     ];
 
     public function akun() {
-        return $this->belongsTo(AkunCustomer::class, 'id', 'id');
+        return $this->belongsTo(AkunCustomer::class, 'user_id', 'id');
     }
 }

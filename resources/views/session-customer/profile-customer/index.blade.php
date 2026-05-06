@@ -1,4 +1,4 @@
-@extends('landing')
+@extends('session-customer.profile-customer.landing')
 
 @section('content')
 <div class="container py-5">
@@ -45,7 +45,7 @@
                     <hr class="my-5 opacity-25" />
 
                     <div class="d-flex justify-content-between">
-                        <a href="/" class="btn btn-outline-secondary px-4">Kembali</a>
+                        <a href="/" class="btn btn-secondary px-4">Kembali</a>
                         <a href="{{ route('profil-customer.edit') }}" class="btn btn-primary px-4">
                             Edit Profil
                         </a>
