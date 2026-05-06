@@ -5,6 +5,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ProdukController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\dashboardSeller;
+use App\Http\Controllers\ProfilCustomerController; 
 
 
 Route::get('/', function () {
@@ -35,7 +36,7 @@ Route::middleware('auth:seller')->controller(AkunSellerController::class)->group
     // --- FITUR PROFIL SELLER ---
     Route::get('/seller/profil', 'indexProfil')->name('profil-seller.index');
     Route::get('/seller/profil/edit', 'editProfil')->name('profil-seller.edit');
-    Route::put('/seller/profil/update', 'updateProfil')->name('profil-seller.update');
+    Route::get('/seller/profil/update', 'updateProfil')->name('profil-seller.update');
     // ---------------------------
 
     Route::get('/seller-produk', [ProdukController::class, 'index'])->name('produk.index');
@@ -43,12 +44,11 @@ Route::middleware('auth:seller')->controller(AkunSellerController::class)->group
     Route::get('/seller-edit-produk/{id}', [ProdukController::class, 'edit'])->name('produk.edit');
     Route::put('/seller-update-produk/{id}', [ProdukController::class, 'update'])->name('produk.update');
 
-    // Perbaikan: Gunakan ProdukController::class agar konsisten
     Route::post('/seller-simpan-produk', [ProdukController::class, 'simpan'])->name('produk.simpan');
     Route::delete('/seller-hapus-produk/{id}', [ProdukController::class, 'destroy'])->name('produk.destroy');
 });
 
-//search menu produk
+// search menu produk
 Route::get('/SearchProduk', [ProdukController::class, 'SearchProduk']);
 
 // Tampilan Login Untuk Seller
@@ -57,10 +57,15 @@ Route::middleware('guest:seller')->controller(AkunSellerController::class)->grou
     Route::post('/seller-login', 'sellerLogins');
 });
 
-
-
 // Route untuk mengubah status toko
 Route::post('/dashboard-seller/toggle-status/{id}', [dashboardSeller::class, 'toggleStatus'])->name('seller.toggle-status');
 
 // UNTUK LOGOUT SELLER 
 Route::post('/seller-logout', [AkunSellerController::class, 'sellerLogout'])->name('seller.logout');
+
+// FITUR PROFIL CUSTOMER
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profil-customer', [ProfilCustomerController::class, 'index'])->name('profil-customer.index');
+    Route::get('/profil-customer/edit', [ProfilCustomerController::class, 'edit'])->name('profil-customer.edit');
+    Route::post('/profil-customer/update', [ProfilCustomerController::class, 'updateProfil'])->name('profil-customer.update');
+});

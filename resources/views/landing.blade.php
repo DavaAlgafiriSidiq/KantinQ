@@ -74,20 +74,40 @@
                                     </li>
                                 </ul>
                             </div>
-                        @elseif(Auth::check())
-                            <div class="dropdown">
-                                <button class="btn btn-white shadow-warning text-warning dropdown-toggle" type="button" id="dropdownCustomer" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-user me-2"></i>{{ Auth::user()->name }}
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownCustomer">
-                                    <li>
-                                        <form action="{{ route('logout') }}" method="POST">
-                                            @csrf
-                                            <button type="submit" class="dropdown-item text-danger">Logout</button>
-                                        </form>
-                                    </li>
-                                </ul>
-                            </div>
+                       @elseif(Auth::check())
+    {{-- Menu Customer --}}
+    <div class="dropdown">
+        <button class="btn btn-white shadow-warning text-warning dropdown-toggle d-flex align-items-center" type="button" id="dropdownCustomer" data-bs-toggle="dropdown" aria-expanded="false">
+            @php
+                // Mencari data profil berdasarkan id user yang sedang login
+                $navProfile = \App\Models\ProfilCustomer::where('user_id', Auth::user()->id)->first();
+            @endphp
+            <img src="{{ $navProfile && $navProfile->foto ? asset('storage/' . $navProfile->foto) : 'https://www.gravatar.com/avatar/000?d=mp&s=40' }}" 
+                class="rounded-circle me-2 border border-warning" 
+                width="30" 
+                height="30" 
+                style="object-fit: cover;">
+            <span>{{ Auth::user()->name }}</span>
+        </button>
+        
+        <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2" aria-labelledby="dropdownCustomer">
+            {{-- INI TOMBOL MY PROFILE YANG KAMU CARI --}}
+            <li>
+                <a class="dropdown-item py-2" href="{{ route('profil-customer.index') }}">
+                    <i class="fas fa-user-circle me-2 text-warning"></i>My Profile
+                </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="dropdown-item py-2 text-danger">
+                        <i class="fas fa-power-off me-2"></i>Logout
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
                         @else
                             <a href="{{ route('login') }}" class="btn btn-white shadow-warning text-warning me-2">
                                 <i class="fas fa-sign-in-alt me-2"></i>Login
@@ -100,6 +120,8 @@
                 </div>
             </div>
         </nav>
+
+        @if(Request::is('/'))
         <section class="py-5 overflow-hidden bg-primary" id="home">
             <div class="container">
                 <div class="row flex-center">
@@ -164,6 +186,11 @@
                 </div>
             </div>
         </section>
+        @endif
+
+        <div class="main-content">
+            @yield('content')
+        </div>
 
 
         <!-- ============================================-->

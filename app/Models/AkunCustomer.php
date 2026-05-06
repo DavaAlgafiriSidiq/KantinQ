@@ -2,49 +2,29 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-// [UPDATE] Mengubah nama class dari User menjadi AkunCustomer agar tim lebih mengerti peruntukannya.
 class AkunCustomer extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    // [UPDATE] Menambahkan $table = 'users' karena kita mengubah nama Model, 
-    // tetapi kita tetap ingin menggunakan tabel bawaan Laravel yaitu 'users' untuk autentikasi.
     protected $table = 'users';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
-        // Menyimpan nomor handphone customer
         'nomor_handphone', 
         'email',
         'password',
+        'foto', 
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [

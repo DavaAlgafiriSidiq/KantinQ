@@ -8,23 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            // Menambahkan kolom nomor handphone jika belum ada 
-            if (!Schema::hasColumn('users', 'nomor_handphone')) {
-                $table->string('nomor_handphone')->nullable()->after('email');
-            }
-            
-            // Menambahkan kolom foto jika belum ada
-            if (!Schema::hasColumn('users', 'foto')) {
-                $table->string('foto')->nullable()->after('nomor_handphone');
-            }
+        Schema::create('profil_customers', function (Blueprint $table) {
+            $table->unsignedBigInteger('id')->primary(); 
+            $table->string('name');
+            $table->string('phone')->nullable();
+            $table->string('foto')->nullable();
+            $table->timestamps();
+
+            $table->foreign('id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['nomor_handphone', 'foto']);
-        });
+        Schema::dropIfExists('profil_customers');
     }
 };

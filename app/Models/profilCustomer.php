@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProfilCustomer extends Model {
     protected $table = 'profil_customers';
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'id'; 
     public $incrementing = false;
 
     protected $fillable = [

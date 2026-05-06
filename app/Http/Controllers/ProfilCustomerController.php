@@ -4,75 +4,77 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\AkunCustomer;
+use App\Models\AkunCustomer; 
 use App\Models\ProfilCustomer;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
-class ProfilCustomerController extends Controller {
+class ProfilCustomerController extends Controller 
+{
+    public function index() 
+    {
+        $user = Auth::user();
+        // Ambil data profil dari tabel profil_customers
+        $profile = ProfilCustomer::where('id', $user->id)->first();
 
-    public function index() {
-        $user = Auth::user(); 
-        return view('profilCustomer.index', compact('user')); 
+        return view('session-customer.profile-customer.index', compact('user', 'profile'));
     }
 
-    public function edit() {
+    public function edit() 
+    {
         $user = Auth::user();
-        if (!$user) {
-            return redirect('/login')->with('error', 'Sesi habis, silakan login kembali.');
-        }
-        return view('profilCustomer.edit', compact('user'));
-    }
-
-    public function updateProfil(Request $request) {
-        $user = Auth::user();
+        $profile = ProfilCustomer::where('id', $user->id)->first();
         
-        $request->validate([
-            'name'            => 'required|string|max:255',
-            'nomor_handphone' => 'required|numeric', 
-            'foto'            => 'nullable|image|mimes:jpg,jpeg,png|max:2048', 
-        ], [
-            'name.required'            => 'Nama pribadi wajib diisi!',
-            'nomor_handphone.required' => 'Nomor handphone wajib diisi!',
-            'nomor_handphone.numeric'  => 'Nomor handphone harus berupa angka!',
-            'foto.max'                 => 'Foto melebihi batas maksimal (Maks. 2MB)!',
-        ]);
-
-        DB::beginTransaction();
-        try {
-            // 1. Update Tabel Akun (users)
-            $user->name = $request->name;
-            $user->nomor_handphone = $request->nomor_handphone;
-            $user->save();
-
-            // 2. Update atau Buat Tabel Profil
-            $profil = ProfilCustomer::find($user->id);
-            if (!$profil) {
-                $profil = new ProfilCustomer();
-                $profil->id = $user->id;
-            }
-
-            $profil->name = $request->name;
-            $profil->phone = $request->nomor_handphone;
-
-            if ($request->hasFile('foto')) {
-                if ($profil->foto && file_exists(public_path($profil->foto))) {
-                    unlink(public_path($profil->foto));
-                }
-                
-                $file = $request->file('foto');
-                $filename = time() . '_cust_' . $file->getClientOriginalName();
-                $file->move(public_path('images/profil_customer'), $filename);
-                $profil->foto = 'images/profil_customer/' . $filename;
-            }
-
-            $profil->save();
-            DB::commit();
-
-            return redirect()->route('profil-customer.index')->with('success', 'Profil berhasil diperbarui!');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()->with('error', 'Gagal update: ' . $e->getMessage());
-        }
+        return view('session-customer.profile-customer.edit', compact('user', 'profile'));
     }
+
+    public function updateProfil(Request $request) 
+{
+    $user = Auth::user();
+    
+    $request->validate([
+        'name'            => 'required|string|max:255',
+        'nomor_handphone' => 'required', 
+        'foto'            => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ]);
+
+    try {
+        // 1. Update Nama di tabel users (AkunCustomer)
+        $currentUser = \App\Models\AkunCustomer::findOrFail($user->id);
+        $currentUser->name = $request->name;
+        $currentUser->save(); 
+
+        // 2. Cari data profil lama
+        $profile = \App\Models\ProfilCustomer::find($user->id);
+        $fotoPath = $profile ? $profile->foto : null;
+
+        // 3. Olah Foto
+        if ($request->hasFile('foto')) {
+            if ($fotoPath && \Illuminate\Support\Facades\File::exists(public_path($fotoPath))) {
+                \Illuminate\Support\Facades\File::delete(public_path($fotoPath));
+            }
+            $file = $request->file('foto');
+            $filename = time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
+            $file->move(public_path('images/profil_customer'), $filename);
+            $fotoPath = 'images/profil_customer/' . $filename;
+        }
+
+        // 4. SIMPAN KE TABEL profil_customers
+        // Kita pakai updateOrInsert versi Query Builder biar lebih "galak" ke SQLite
+        \Illuminate\Support\Facades\DB::table('profil_customers')->updateOrInsert(
+            ['id' => $user->id], // Cari berdasarkan ID
+            [
+                'name'       => $request->name,
+                'phone'      => $request->nomor_handphone,
+                'foto'       => $fotoPath,
+                'updated_at' => now(),
+                'created_at' => $profile ? $profile->created_at : now(),
+            ]
+        );
+
+        return redirect()->route('profil-customer.index')->with('success', 'Profil berhasil diperbarui!');
+
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
+    }
+}
 }
