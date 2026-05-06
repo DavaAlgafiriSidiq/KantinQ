@@ -32,4 +32,10 @@ class AkunCustomer extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    
+    public function profil()
+    {
+        return $this->hasOne(ProfilCustomer::class, 'user_id', 'id');
+    }
 }
