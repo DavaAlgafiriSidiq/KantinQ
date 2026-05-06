@@ -78,15 +78,7 @@
     {{-- Menu Customer --}}
     <div class="dropdown">
         <button class="btn btn-white shadow-warning text-warning dropdown-toggle d-flex align-items-center" type="button" id="dropdownCustomer" data-bs-toggle="dropdown" aria-expanded="false">
-            @php
-                // Mencari data profil berdasarkan id user yang sedang login
-                $navProfile = \App\Models\ProfilCustomer::where('user_id', Auth::user()->id)->first();
-            @endphp
-            <img src="{{ $navProfile && $navProfile->foto ? asset('storage/' . $navProfile->foto) : 'https://www.gravatar.com/avatar/000?d=mp&s=40' }}" 
-                class="rounded-circle me-2 border border-warning" 
-                width="30" 
-                height="30" 
-                style="object-fit: cover;">
+            <i class="fas fa-user me-2"></i>
             <span>{{ Auth::user()->name }}</span>
         </button>
         

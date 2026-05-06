@@ -13,7 +13,6 @@ class ProfilCustomerController extends Controller
     public function index() 
     {
         $user = Auth::user();
-        // Ambil data profil dari tabel profil_customers
         $profile = ProfilCustomer::where('id', $user->id)->first();
 
         return view('session-customer.profile-customer.index', compact('user', 'profile'));
@@ -38,16 +37,14 @@ class ProfilCustomerController extends Controller
     ]);
 
     try {
-        // 1. Update Nama di tabel users (AkunCustomer)
         $currentUser = \App\Models\AkunCustomer::findOrFail($user->id);
         $currentUser->name = $request->name;
         $currentUser->save(); 
 
-        // 2. Cari data profil lama
         $profile = \App\Models\ProfilCustomer::find($user->id);
         $fotoPath = $profile ? $profile->foto : null;
 
-        // 3. Olah Foto
+        // Olah Foto
         if ($request->hasFile('foto')) {
             if ($fotoPath && \Illuminate\Support\Facades\File::exists(public_path($fotoPath))) {
                 \Illuminate\Support\Facades\File::delete(public_path($fotoPath));
@@ -58,10 +55,8 @@ class ProfilCustomerController extends Controller
             $fotoPath = 'images/profil_customer/' . $filename;
         }
 
-        // 4. SIMPAN KE TABEL profil_customers
-        // Kita pakai updateOrInsert versi Query Builder biar lebih "galak" ke SQLite
         \Illuminate\Support\Facades\DB::table('profil_customers')->updateOrInsert(
-            ['id' => $user->id], // Cari berdasarkan ID
+            ['id' => $user->id], 
             [
                 'name'       => $request->name,
                 'phone'      => $request->nomor_handphone,
