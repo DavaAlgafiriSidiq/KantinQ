@@ -41,73 +41,106 @@
     <main class="main" id="top">
         <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top"
             data-navbar-on-scroll="data-navbar-on-scroll">
-            <div class="container"><a class="navbar-brand d-inline-flex" href="index.html"><img class="d-inline-block"
-                        src="assets-landing/img/gallery/logo.svg" alt="logo" /><span
-                        class="text-1000 fs-3 fw-bold ms-2 text-gradient">foodwaGon</span></a>
+            <div class="container">
+                {{-- Logo --}}
+                <a class="navbar-brand d-inline-flex align-items-center" href="index.html">
+                    <img class="d-inline-block" src="assets-landing/img/gallery/logo.svg" alt="logo" />
+                    <span class="text-1000 fs-3 fw-bold ms-2 text-gradient">foodwaGon</span>
+                </a>
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon">
-                    </span></button>
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
                 <div class="collapse navbar-collapse border-top border-lg-0 my-2 mt-lg-0" id="navbarSupportedContent">
-                    <div class="mx-auto pt-5 pt-lg-0 d-block d-lg-none d-xl-block">
-                        <p class="mb-0 fw-bold text-lg-center">Deliver to: <i
-                                class="fas fa-map-marker-alt text-warning mx-2"></i><span class="fw-normal">Current
-                                Location </span><span>Mirpur 1 Bus Stand, Dhaka</span></p>
-                    </div>
-                    <div class="d-flex mt-4 mt-lg-0 ms-lg-auto ms-xl-0">
-                        <div class="input-group-icon pe-2"><i class="fas fa-search input-box-icon text-primary"></i>
+                    <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0 ms-auto flex-wrap">
+
+                        {{-- Search --}}
+                        <div class="input-group-icon">
+                            <i class="fas fa-search input-box-icon text-primary"></i>
                             <input class="form-control border-0 input-box bg-100" type="search"
                                 placeholder="Search Food" aria-label="Search" />
                         </div>
+
+                        {{-- Semua Menu --}}
+                        <a href="#" class="btn btn-warning fw-semibold">
+                            <i class="fas fa-utensils me-1"></i>Semua Menu
+                        </a>
+
                         @if(Auth::guard('seller')->check())
+                            {{-- Seller Dropdown --}}
                             <div class="dropdown">
-                                <button class="btn btn-white shadow-warning text-warning dropdown-toggle" type="button" id="dropdownSeller" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-user me-2"></i>{{ Auth::guard('seller')->user()->username }}
+                                <button class="btn btn-warning text-white dropdown-toggle d-flex align-items-center gap-2"
+                                    type="button" id="dropdownSeller" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user"></i>{{ Auth::guard('seller')->user()->username }}
                                 </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownSeller">
-                                    <li><a class="dropdown-item" href="{{ route('master') }}">Dashboard</a></li>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2" aria-labelledby="dropdownSeller">
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{{ route('master') }}">
+                                            <i class="fas fa-tachometer-alt me-2 text-warning"></i>Dashboard
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <form action="{{ route('seller.logout') }}" method="POST">
                                             @csrf
-                                            <button type="submit" class="dropdown-item text-danger">Logout</button>
+                                            <button type="submit" class="dropdown-item py-2 text-danger">
+                                                <i class="fas fa-power-off me-2"></i>Logout
+                                            </button>
                                         </form>
                                     </li>
                                 </ul>
                             </div>
-                       @elseif(Auth::check())
-    {{-- Menu Customer --}}
-    <div class="dropdown">
-        <button class="btn btn-white shadow-warning text-warning dropdown-toggle d-flex align-items-center" type="button" id="dropdownCustomer" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fas fa-user me-2"></i>
-            <span>{{ Auth::user()->name }}</span>
-        </button>
-        
-        <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2" aria-labelledby="dropdownCustomer">
-            {{-- INI TOMBOL MY PROFILE YANG KAMU CARI --}}
-            <li>
-                <a class="dropdown-item py-2" href="{{ route('profil-customer.index') }}">
-                    <i class="fas fa-user-circle me-2 text-warning"></i>My Profile
-                </a>
-            </li>
-            <li><hr class="dropdown-divider"></li>
-            <li>
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="dropdown-item py-2 text-danger">
-                        <i class="fas fa-power-off me-2"></i>Logout
-                    </button>
-                </form>
-            </li>
-        </ul>
-    </div>
-                        @else
-                            <a href="{{ route('login') }}" class="btn btn-white shadow-warning text-warning me-2">
-                                <i class="fas fa-sign-in-alt me-2"></i>Login
+
+                        @elseif(Auth::check())
+                            {{-- Tombol Favorit --}}
+                            <a href="#" class="btn btn-light border position-relative" title="Favorit Saya">
+                                <i class="fas fa-heart text-danger"></i>
+                                
                             </a>
-                            <a href="{{ route('register') }}" class="btn btn-white shadow-warning text-warning">
-                                <i class="fas fa-user me-2"></i>Register
+
+                            {{-- Tombol Keranjang --}}
+                            <a href="#" class="btn btn-light border position-relative" title="Keranjang">
+                                <i class="fas fa-shopping-cart text-warning"></i>
+                     
+                            </a>
+
+                            {{-- Customer Dropdown --}}
+                            <div class="dropdown">
+                                <button class="btn btn-warning text-white dropdown-toggle d-flex align-items-center gap-2"
+                                    type="button" id="dropdownCustomer" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user"></i>{{ Auth::user()->name }}
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2" aria-labelledby="dropdownCustomer">
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{{ route('profil-customer.index') }}">
+                                            <i class="fas fa-user-circle me-2 text-warning"></i>My Profile
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form action="{{ route('logout') }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="dropdown-item py-2 text-danger">
+                                                <i class="fas fa-power-off me-2"></i>Logout
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+
+                        @else
+                            {{-- Login & Register --}}
+                            <a href="{{ route('login') }}" class="btn btn-warning fw-semibold">
+                                <i class="fas fa-sign-in-alt me-1"></i>Login
+                            </a>
+                            <a href="{{ route('register') }}" class="btn btn-warning fw-semibold">
+                                <i class="fas fa-user-plus me-1"></i>Register
                             </a>
                         @endif
+
                     </div>
                 </div>
             </div>
