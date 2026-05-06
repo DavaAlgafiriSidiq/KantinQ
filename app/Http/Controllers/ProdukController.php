@@ -76,10 +76,10 @@ class ProdukController extends Controller
                 $filename = time() . '_' . $file->getClientOriginalName();
                 
                 // Simpan file
-                $file->move(public_path('images'), $filename);
+                $file->move(public_path('images/foto_produk'), $filename);
                 
                 // Masukkan ke kolom foto_produk di database
-                $produk->foto_produk = '/images/' . $filename;
+                $produk->foto_produk = '/images/foto_produk/' . $filename;
             }
 
             $produk->save();
@@ -155,10 +155,10 @@ class ProdukController extends Controller
                     // 2. Upload foto baru
                     $file = $request->file('foto_produk');
                     $filename = time() . '_' . $file->getClientOriginalName();
-                    $file->move(public_path('images'), $filename);
+                    $file->move(public_path('images/foto_produk/'), $filename);
                     
                     // 3. Update path di database
-                    $produk->foto_produk = '/images/' . $filename;
+                    $produk->foto_produk = '/images/foto_produk/' . $filename;
                 }
             $produk->save();
             DB::commit();

@@ -65,7 +65,7 @@
                         </div>
 
                         {{-- Semua Menu --}}
-                        <a href="#" class="btn btn-warning fw-semibold">
+                        <a href="/menu" class="btn btn-warning fw-semibold">
                             <i class="fas fa-utensils me-1"></i>Semua Menu
                         </a>
 

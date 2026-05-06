@@ -84,6 +84,16 @@ class DatabaseSeeder extends Seeder
             'created_at' => $today, 
             'updated_at' => $today
         ]);
+       
         OrderItem::create(['order_id' => $order5->id, 'menu_id' => $menuAyam->id, 'quantity' => 2, 'price' => 15000]);
+
+        $this->call([
+            KategoriSeeder::class,
+            AkunSellerSeeder::class,
+            ProdukSeeder::class,
+            KategoriSeeder::class,
+            DataSeeder::class,
+        ]);
     }
+
 }

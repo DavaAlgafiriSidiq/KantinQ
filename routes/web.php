@@ -5,7 +5,8 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ProdukController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\dashboardSeller;
-use App\Http\Controllers\ProfilCustomerController; 
+use App\Http\Controllers\ProfilCustomerController;
+use App\Http\Controllers\landingController;
 
 
 Route::get('/', function () {
@@ -22,6 +23,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware('guest')->group(function () {
     Route::get('/login', [\App\Http\Controllers\CustomerAuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [\App\Http\Controllers\CustomerAuthController::class, 'login']);
+    Route::get('/menu', [landingController::class, 'menu'])->name('session-customer.menu');
 });
 
 // LOGOUT CUSTOMER

@@ -23,6 +23,6 @@ class ProfilSeller extends Model
     
     public function akunSeller()
     {
-        return $this->belongsTo(AkunSeller::class, 'id', 'id');
+        return $this->belongsTo(AkunSellerModel::class, 'id', 'id');
     }
 }

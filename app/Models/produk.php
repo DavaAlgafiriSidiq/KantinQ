@@ -3,9 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Database\Factories\ProdukFactory;
 
 class produk extends Model
 {
+    use HasFactory;
+
+    protected static function newFactory()
+    {
+        // Arahkan ke file factory yang benar
+        return ProdukFactory::new();
+    }
     protected $table = 'produks';
     protected $fillable = ['id_seller', 'id_kategori', 'nama_produk', 'deskripsi', 'harga', 'stok', 'status', 'foto_produk'];
     public function kategori()
