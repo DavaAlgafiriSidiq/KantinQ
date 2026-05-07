@@ -34,7 +34,7 @@ class AkunCustomer extends Authenticatable
     }
 
     
-    public function profil()
+    public function profilCustomer()
     {
         return $this->hasOne(ProfilCustomer::class, 'user_id', 'id');
     }

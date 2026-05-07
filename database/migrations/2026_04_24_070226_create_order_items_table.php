@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
-            $table->foreignId('menu_id')->constrained('menus')->onDelete('cascade');
+            $table->foreignId('id_produk')->constrained('produks')->onDelete('cascade');
+            $table->foreignId('id_profil_customer')->constrained('profil_customers')->onDelete('cascade');
             $table->integer('quantity'); //  Dihitung untuk Top 3 Menu
             $table->integer('price');
             $table->timestamps();

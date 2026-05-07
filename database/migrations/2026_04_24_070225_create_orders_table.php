@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('store_id')->constrained('stores')->onDelete('cascade');
+            $table->foreignId('id_seller')->constrained('seller')->onDelete('cascade');
             $table->integer('total_amount'); // AC: Pendapatan hari ini
             $table->enum('status', [         // AC: Status operasional & manajemen pesanan
                 'baru', 

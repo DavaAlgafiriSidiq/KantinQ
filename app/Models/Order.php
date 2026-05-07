@@ -1,26 +1,33 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    
-    protected $fillable = ['user_id', 'store_id', 'total_amount', 'status'];
+    protected $table = 'orders';
 
-    // Relasi ke tabel User (Pembeli)
-    public function user() {
-        return $this->belongsTo(User::class);
+    protected $fillable = [
+        'id_seller', 'id_profil_customer', 'kode_pesanan',
+        'total_amount', 'metode_bayar', 'status',
+        'status_midtrans', 'snap_token', 'kode_unik',
+        'catatan', 'waktu_pengambilan',
+    ];
+
+    public function profilCustomer()
+    {
+        return $this->belongsTo(profilCustomer::class, 'id_profil_customer');
     }
 
-    // Relasi ke tabel Store (Toko Kantin)
-    public function store() {
-        return $this->belongsTo(Store::class);
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class, 'order_id');
     }
 
-    public function items() {
-        return $this->hasMany(OrderItem::class);
+        public function seller()
+    {
+        // Menggunakan id_seller sebagai foreign key
+        return $this->belongsTo(AkunSellerModel::class, 'id_seller');
     }
 }
 
