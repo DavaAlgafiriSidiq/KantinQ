@@ -81,6 +81,20 @@
                                 <i class="fas fa-map-marker-alt text-warning me-1"></i> 
                                 {{ $product->seller->nama_toko ?? '-' }}
                             </p>
+
+                            <p class="card-text mb-2"
+                            style="font-size: 0.9rem; font-weight: 500;">
+                                <i class="fas fa-box-open text-warning me-1"></i>
+                                @if($product->stok > 0)
+                                    <span class="text-success">
+                                        Stock: {{ $product->stok }}
+                                    </span>
+                                @else
+                                    <span class="text-danger">
+                                        Stock Habis
+                                    </span>
+                                @endif
+                            </p>
                             
                             {{-- Harga --}}
                             <p class="card-text fw-bold fs-3 mb-3 text-dark">
