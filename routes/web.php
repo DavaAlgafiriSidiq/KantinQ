@@ -23,8 +23,9 @@ Route::middleware('guest')->group(function () {
 Route::middleware('guest')->group(function () {
     Route::get('/login', [\App\Http\Controllers\CustomerAuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [\App\Http\Controllers\CustomerAuthController::class, 'login']);
-    Route::get('/menu', [landingController::class, 'menu'])->name('session-customer.menu');
+    //asalnya ini tuh untuk route /menu
 });
+Route::get('/menu', [landingController::class, 'menu'])->name('session-customer.menu');
 
 // LOGOUT CUSTOMER
 Route::post('/logout', [\App\Http\Controllers\CustomerAuthController::class, 'logout'])->name('logout')->middleware('auth');
@@ -38,7 +39,7 @@ Route::middleware('auth:seller')->controller(AkunSellerController::class)->group
     // --- FITUR PROFIL SELLER ---
     Route::get('/seller/profil', 'indexProfil')->name('profil-seller.index');
     Route::get('/seller/profil/edit', 'editProfil')->name('profil-seller.edit');
-    Route::get('/seller/profil/update', 'updateProfil')->name('profil-seller.update');
+    Route::put('/seller/profil/update', 'updateProfil')->name('profil-seller.update');
     // ---------------------------
 
     Route::get('/seller-produk', [ProdukController::class, 'index'])->name('produk.index');

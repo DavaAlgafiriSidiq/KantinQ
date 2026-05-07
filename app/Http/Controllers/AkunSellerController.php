@@ -35,7 +35,7 @@ class AkunSellerController extends Controller
         if (Auth::guard('seller')->attempt($validated)) {
             $request->session()->regenerate();
 
-            return redirect()->intended('/seller');
+            return redirect()->intended('/seller-produk');
         }
 
         throw ValidationException::withMessages([
@@ -51,7 +51,7 @@ class AkunSellerController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/landing');
+        return redirect('/');
     }
 
     // --- Tambahan Fungsi Profil ---

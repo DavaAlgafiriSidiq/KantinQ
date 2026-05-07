@@ -175,15 +175,16 @@ class ProdukController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy($id)
-    {
-        $produk = produk::where('id', $id)->where('id_seller', auth('seller')->user()->id)->firstOrFail();
+{
+    $produk = produk::where('id', $id)->firstOrFail();
 
-        // Hapus file gambar dari folder
-        if ($produk->foto_produk && file_exists(public_path($produk->foto_produk))) {
-            unlink(public_path($produk->foto_produk));
-        }
-
-        $produk->delete();
-        return redirect()->route('produk.index')->with('success', 'Produk berhasil dihapus.');
+    if ($produk->foto_produk && file_exists(public_path($produk->foto_produk))) {
+        unlink(public_path($produk->foto_produk));
     }
+
+    $produk->delete();
+
+    return redirect()->route('produk.index')
+        ->with('success', 'Produk berhasil dihapus.');
+}
 }

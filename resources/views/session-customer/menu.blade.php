@@ -4,6 +4,30 @@
 <section class="py-5">
     <div class="container">
         <h2 class="mb-4">Daftar Menu</h2>
+
+<!-- Untuk filter kategori produk -->
+        <form method="GET"
+            action="{{ route('session-customer.menu') }}"
+            class="mb-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <select name="kategori"
+                            onchange="this.form.submit()"
+                            class="btn btn-warning fw-semibold text-start w-100 border-0"
+                            style="padding: 10px 15px; border-radius: 8px;">
+                        <option value="">
+                            Semua Kategori
+                        </option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}"
+                                {{ request('kategori') == $category->id ? 'selected' : '' }}>
+                                {{ $category->nama_kategori }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+        </form>
         
         <div class="row">
             @forelse ($products as $product)
@@ -13,9 +37,9 @@
                         
                         {{-- Logika Foto: Cek file di folder images/foto_produk --}}
                         <img src="{{ !empty($product->foto_produk) ? asset('images/foto_produk/' . $product->foto_produk) : asset('images/foto_produk/default.png') }}" 
-                             class="card-img-top" 
-                             style="height: 180px; object-fit: cover;" 
-                             alt="{{ $product->nama_produk }}">
+                            class="card-img-top" 
+                            style="height: 180px; object-fit: cover;" 
+                            alt="{{ $product->nama_produk }}">
                         
                         <div class="card-body p-3">
                             {{-- Badge Kategori --}}

@@ -77,7 +77,7 @@
                 <hr class="my-5 opacity-25" />
 
                 <div class="d-flex justify-content-between align-items-center mb-2 px-2">
-                    <a href="/seller" class="btn btn-label-secondary border-0 btn-sm">
+                    <a href="/seller-produk" class="btn btn-label-secondary border-0 btn-sm">
                         <i class='bx bx-chevron-left me-1'></i> Kembali ke Dashboard
                     </a>
                     <a href="{{ route('profil-seller.edit') }}" class="btn btn-primary px-4 shadow-sm btn-sm">

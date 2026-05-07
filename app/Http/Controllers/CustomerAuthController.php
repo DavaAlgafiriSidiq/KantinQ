@@ -26,7 +26,7 @@ class CustomerAuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             // Jika berhasil, arahkan ke beranda belanja
-            return redirect()->intended('/')->with('success', 'Berhasil login sebagai Customer.');
+            return redirect()->intended('/menu')->with('success', 'Berhasil login sebagai Customer.');
         }
 
         // Jika gagal, kembalikan dengan pesan error
