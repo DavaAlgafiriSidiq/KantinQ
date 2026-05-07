@@ -39,6 +39,7 @@
     <!--    Main Content-->
     <!-- ===============================================-->
     <main class="main" id="top">
+
         <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top"
             data-navbar-on-scroll="data-navbar-on-scroll">
             <div class="container">
@@ -106,9 +107,8 @@
                             </a>
 
                             {{-- Tombol Keranjang --}}
-                            <a href="#" class="btn btn-light border position-relative" title="Keranjang">
+                            <a href="{{ route('keranjang') }}" class="btn btn-light border position-relative" title="Keranjang">
                                 <i class="fas fa-shopping-cart text-warning"></i>
-                     
                             </a>
 
                             {{-- Customer Dropdown --}}

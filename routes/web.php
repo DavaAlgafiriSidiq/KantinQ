@@ -7,11 +7,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\dashboardSeller;
 use App\Http\Controllers\ProfilCustomerController;
 use App\Http\Controllers\landingController;
-
+use App\Http\Controllers\KeranjangController;
+use App\Http\Controllers\CheckoutController;
 
 Route::get('/', function () {
     return view('landing');
 });
+
+Route::get('/menu', [landingController::class, 'menu'])->name('session-customer.menu');
+
 
 // REGISTRASI UMUM (Customer & Seller)
 Route::middleware('guest')->group(function () {
@@ -23,9 +27,10 @@ Route::middleware('guest')->group(function () {
 Route::middleware('guest')->group(function () {
     Route::get('/login', [\App\Http\Controllers\CustomerAuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [\App\Http\Controllers\CustomerAuthController::class, 'login']);
-    //asalnya ini tuh untuk route /menu
+    Route::get('/menu', [landingController::class, 'menu'])->name('session-customer.menu');
 });
 Route::get('/menu', [landingController::class, 'menu'])->name('session-customer.menu');
+
 
 // LOGOUT CUSTOMER
 Route::post('/logout', [\App\Http\Controllers\CustomerAuthController::class, 'logout'])->name('logout')->middleware('auth');
@@ -66,9 +71,13 @@ Route::post('/dashboard-seller/toggle-status/{id}', [dashboardSeller::class, 'to
 // UNTUK LOGOUT SELLER 
 Route::post('/seller-logout', [AkunSellerController::class, 'sellerLogout'])->name('seller.logout');
 
-// FITUR PROFIL CUSTOMER
+// FITUR CUSTOMER
 Route::middleware(['auth'])->group(function () {
     Route::get('/profil-customer', [ProfilCustomerController::class, 'index'])->name('profil-customer.index');
     Route::get('/profil-customer/edit', [ProfilCustomerController::class, 'edit'])->name('profil-customer.edit');
     Route::post('/profil-customer/update', [ProfilCustomerController::class, 'updateProfil'])->name('profil-customer.update');
+    Route::get('/keranjang', [KeranjangController::class, 'tampilkanKeranjang'])->name('keranjang');
+    Route::delete('/keranjang/{id}', [KeranjangController::class, 'hapusItem'])->name('hapusKeranjang');
+    Route::post('/keranjang/tambah/{id}', [KeranjangController::class, 'tambahKeKeranjang'])->name('tambahKeKeranjang');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 });
