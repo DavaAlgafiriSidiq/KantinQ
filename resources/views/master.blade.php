@@ -4,7 +4,7 @@
     <div class="content-wrapper">
         <div class="container-xxl flex-grow-1 container-p-y">
             
-            <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Dashboard /</span> Toko {{ $toko->name }}</h4>
+            <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Dashboard /</span> Toko {{ $seller->nama_toko ?? 'Kantin' }}</h4>
 
             @if(session('success'))
             <div class="alert alert-success alert-dismissible mb-4" role="alert">
@@ -21,7 +21,7 @@
                                 Status Operasional: <strong>{{ $isTokoBuka ? 'BUKA' : 'TUTUP' }}</strong>
                             </h5>
                             
-                            <form action="{{ route('seller.toggle-status', $toko->id) }}" method="POST" class="m-0">
+                            <form action="{{ route('seller.toggle-status') }}" method="POST" class="m-0">
                                 @csrf
                                 <button type="submit" class="btn btn-{{ $isTokoBuka ? 'light' : 'dark' }}">
                                     <i class='bx bx-power-off me-1'></i> 

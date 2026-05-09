@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Menu extends Model
 {
-   protected $fillable = ['store_id', 'name', 'price', 'is_active'];
+    protected $fillable = ['id_seller', 'nama_produk', 'harga', 'is_active'];
 
-    public function store() {
-        return $this->belongsTo(Store::class);
+    public function seller() {
+        return $this->belongsTo(AkunSellerModel::class, 'id_seller'); 
     }
 }

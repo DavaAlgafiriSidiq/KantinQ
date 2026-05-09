@@ -11,17 +11,17 @@ class OrderItem extends Model
 
     // Kolom yang boleh diisi (mass assignment)
     protected $fillable = [
-        'order_id', 
+        'id_order', 
         'id_produk', 
         'id_profil_customer', 
-        'quantity', 
-        'price'
+        'stok', 
+        'harga'
     ];
 
     // Relasi ke tabel Order
     public function order() 
     {
-        return $this->belongsTo(Order::class, 'order_id');
+        return $this->belongsTo(Order::class, 'id_order');
     }
 
     // Relasi ke tabel Produk (sebelumnya menu)
@@ -34,6 +34,10 @@ class OrderItem extends Model
     // Relasi ke tabel Profil Customer
     public function customer() 
     {
-        return $this->belongsTo(profilCustomer::class, 'id_profil_customer');
+        return $this->belongsTo(profilCustomer::class, 'user_id');
+    }
+    public function menu() 
+    {
+    return $this->belongsTo(Menu::class, 'id_produk'); 
     }
 }

@@ -16,7 +16,7 @@ class Order extends Model
 
     public function profilCustomer()
     {
-        return $this->belongsTo(profilCustomer::class, 'id_profil_customer');
+        return $this->belongsTo(profilCustomer::class, 'user_id');
     }
 
     public function orderItems()

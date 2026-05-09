@@ -39,7 +39,12 @@ Route::post('/logout', [\App\Http\Controllers\CustomerAuthController::class, 'lo
 Route::middleware('auth:seller')->controller(AkunSellerController::class)->group(function () {
 
     // SELLER (DASHBOARD)   
-    Route::get('/seller', [dashboardSeller::class, 'index'])->name('master');
+    // Route untuk mengubah status toko 
+    Route::post('/dashboard-seller/toggle-status', [dashboardSeller::class, 'toggleStatus'])->name('seller.toggle-status');
+
+    //  ROUTE  UNTUK FITUR REAL-TIME ANTREAN 
+    Route::get('/seller/orders/data', [dashboardSeller::class, 'getOrderData'])->name('seller.orders.data');
+    Route::post('/seller/orders/{id}/status', [dashboardSeller::class, 'updateOrderStatus'])->name('seller.orders.status');
 
     // --- FITUR PROFIL SELLER ---
     Route::get('/seller/profil', 'indexProfil')->name('profil-seller.index');
@@ -65,11 +70,10 @@ Route::middleware('guest:seller')->controller(AkunSellerController::class)->grou
     Route::post('/seller-login', 'sellerLogins');
 });
 
-// Route untuk mengubah status toko
-Route::post('/dashboard-seller/toggle-status/{id}', [dashboardSeller::class, 'toggleStatus'])->name('seller.toggle-status');
 
-// UNTUK LOGOUT SELLER 
+// LOGOUT SELLER 
 Route::post('/seller-logout', [AkunSellerController::class, 'sellerLogout'])->name('seller.logout');
+
 
 // FITUR CUSTOMER
 Route::middleware(['auth'])->group(function () {
