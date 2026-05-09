@@ -38,4 +38,9 @@ class AkunCustomer extends Authenticatable
     {
         return $this->hasOne(ProfilCustomer::class, 'user_id', 'id');
     }
+
+    public function favorites()
+    {
+        return $this->belongsToMany(produk::class, 'favorites', 'id_user', 'id_produk');
+    }
 }

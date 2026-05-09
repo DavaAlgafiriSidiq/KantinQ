@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfilCustomerController;
 use App\Http\Controllers\landingController;
 use App\Http\Controllers\KeranjangController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\FavoritesController;
 
 Route::get('/', function () {
     return view('landing');
@@ -92,5 +93,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/checkout/proses', [CheckoutController::class, 'proses'])->name('checkout.proses');
     Route::get('/checkout/sukses', [CheckoutController::class, 'sukses'])->name('checkout.sukses');
     Route::get('/checkout/gagal', [CheckoutController::class, 'gagal'])->name('checkout.gagal');
+    Route::middleware(['auth'])->group(function () {
+    Route::get('/favorites', [FavoritesController::class, 'index'])->name('favorites.index');
+    Route::post('/favorites/toggle/{id_produk}', [FavoritesController::class, 'toggleFavorite'])->name('favorites.toggle');
+    Route::delete('/favorites/{id}', [FavoritesController::class, 'destroy'])->name('favorites.destroy');
+});
 });
 

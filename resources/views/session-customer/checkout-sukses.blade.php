@@ -25,7 +25,8 @@
             </div>
             <div class="d-flex justify-content-between mb-2 small">
                 <span class="text-muted">Total Bayar</span>
-                <span class="fw-bold text-warning">Rp {{ number_format($pesanan->total_harga, 0, ',', '.') }}</span>
+                {{-- Pastikan nama kolom total_harga atau total_amount sesuai database --}}
+                <span class="fw-bold text-warning">Rp {{ number_format($pesanan->total_harga ?? $pesanan->total_amount, 0, ',', '.') }}</span>
             </div>
             <div class="d-flex justify-content-between small">
                 <span class="text-muted">Status</span>
@@ -44,4 +45,49 @@
         </a>
     </div>
 </div>
+
+{{-- SweetAlert Script untuk Fitur Favorit --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        @if($pesanan && $pesanan->orderItems->count() > 0)
+            
+            // Ambil data produk pertama dari list orderItems
+            // Sesuaikan id_produk jika di tabel order_items namanya berbeda
+            const idProduk = "{{ $pesanan->orderItems->first()->id_produk }}";
+            const namaProduk = "{{ $pesanan->orderItems->first()->produk->nama_produk }}";
+            const idOrder = "{{ $pesanan->id }}";
+
+            setTimeout(() => {
+                Swal.fire({
+                    title: 'Suka dengan Menunya?',
+                    text: `Apakah kamu ingin menambahkan "${namaProduk}" ke daftar favorit agar lebih mudah dipesan lagi nanti?`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ffc107',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: '<i class="fas fa-heart me-2"></i>Ya, Tambahkan!',
+                    cancelButtonText: 'Nanti saja',
+                    borderRadius: '15px'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // form data favorit
+                        let form = document.createElement('form');
+                        form.method = 'POST';
+                        // Memanggil route favorites.toggle dengan ID produk
+                        form.action = "{{ route('favorites.toggle', ':id') }}".replace(':id', idProduk);
+                        
+                        form.innerHTML = `
+                            @csrf
+                            <input type="hidden" name="id_order" value="${idOrder}">
+                        `;
+                        
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            }, 1000); // Muncul setelah 1 detik
+        @endif
+    });
+</script>
 @endsection

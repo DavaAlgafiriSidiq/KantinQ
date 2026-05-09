@@ -3,49 +3,52 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Favorite; // Pastikan nama file di Models sudah Favorite.php (F besar)
-use App\Models\produk;   // Tambahkan ini jika ingin validasi produk
+use App\Models\Favorite; 
 use Illuminate\Support\Facades\Auth;
 
-class FavoriteController extends Controller
+class FavoritesController extends Controller
 {
-    // menampilkan halaman favorit
+    /**
+     * Menampilkan daftar menu favorit user
+     */
     public function index()
     {
         $user = Auth::user();
-                $favorites = Favorite::with(['produk', 'order'])
-                    ->where('user_id', $user->id)
+        
+        $favorites = Favorite::with(['produk', 'order'])
+                    ->where('id_user', $user->id)
                     ->latest()
                     ->get();
 
-        return view('session-customer.favorites.index', compact('favorites'));
+        return view('session-customer.favorite-customer.index', compact('favorites'));
     }
 
-    public function toggleFavorite(Request $request, $produk_id)
+    /**
+     * Menyimpan atau memperbarui favorit dari halaman checkout
+     */
+    public function toggleFavorite(Request $request, $id_produk)
     {
-        $user_id = Auth::id(); 
+        $user = Auth::user();
         
-        // updateOrCreate untuk mencegah duplikasi data yang sama
-        // Jika user memfavoritkan produk yang sama dari order yang berbeda
         Favorite::updateOrCreate(
             [
-                'user_id'   => $user_id,
-                'produk_id' => $produk_id,
+                'id_user'   => $user->id,
+                'id_produk' => $id_produk,
             ],
             [
-                'order_id'  => $request->order_id
+                'id_order'  => $request->id_order 
             ]
         );
 
         return redirect()->route('favorites.index')->with('success', 'Menu berhasil ditambahkan ke favorit!');
     }
 
-    // fungsi destroy untuk menghapus favorit
+    /**
+     * Menghapus menu dari daftar favorit
+     */
     public function destroy($id)
     {
-        $favorite = Favorite::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
-        $favorite->delete();
-
-        return back()->with('success', 'Berhasil dihapus dari favorit.');
+        Favorite::where('id', $id)->where('id_user', Auth::id())->delete();
+        return back()->with('success', 'Berhasil dihapus.');
     }
 }

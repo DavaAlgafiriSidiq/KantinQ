@@ -101,9 +101,21 @@
 
                         @elseif(Auth::check())
                             {{-- Tombol Favorit --}}
-                            <a href="#" class="btn btn-light border position-relative" title="Favorit Saya">
+                            <a href="{{ route('favorites.index') }}" class="btn btn-light border position-relative" title="Favorit Saya">
                                 <i class="fas fa-heart text-danger"></i>
                                 
+                                {{-- Menampilkan jumlah favorit jika user sudah login --}}
+                                @auth
+                                    @php
+                                        $favCount = \App\Models\Favorite::where('id_user', Auth::id())->count();
+                                    @endphp
+                                    
+                                    @if($favCount > 0)
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+                                            {{ $favCount }}
+                                        </span>
+                                    @endif
+                                @endauth
                             </a>
 
                             {{-- Tombol Keranjang --}}

@@ -16,7 +16,7 @@ class KeranjangController extends Controller
         }
 
         $user = Auth::user();
-        $customer = $user->profilCustomer ?: $user->profilCustomer()->create(['nama' => $user->name]);
+        $customer = $user->profilCustomer ?: $user->profilCustomer()->create(['name' => $user->name]);
 
         $produk = produk::findOrFail($id);
     
