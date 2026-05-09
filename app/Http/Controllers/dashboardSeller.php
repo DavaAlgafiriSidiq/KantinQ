@@ -18,7 +18,8 @@ class dashboardSeller extends Controller
         $seller = Auth::guard('seller')->user(); // Ambil data seller yang login
         $sellerId = $seller->id;
 
-        $riwayatPesanan = Order::with('user')
+        // PERBAIKAN 1: Ganti 'user' jadi 'profilCustomer'
+        $riwayatPesanan = Order::with('profilCustomer')
             ->where('id_seller', $sellerId)
             ->orderBy('created_at', 'desc')
             ->get();
@@ -42,7 +43,8 @@ class dashboardSeller extends Controller
             ->join('produks', 'order_items.id_produk', '=', 'produks.id') 
             ->where('orders.id_seller', $sellerId)
             ->whereDate('orders.created_at', $today)
-            ->select('produks.nama_produk as name', DB::raw('SUM(order_items.stok) as total_sold'))
+            // PERBAIKAN 2: Ganti 'stok' jadi 'quantity'
+            ->select('produks.nama_produk as name', DB::raw('SUM(order_items.quantity) as total_sold'))
             ->groupBy('produks.id', 'produks.nama_produk')
             ->orderByDesc('total_sold')
             ->limit(3)

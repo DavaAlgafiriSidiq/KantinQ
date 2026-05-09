@@ -129,7 +129,7 @@
                                     @forelse($riwayatPesanan as $order)
                                     <tr>
                                         <td>{{ $order->created_at->format('H:i') }} <small class="text-muted">({{ $order->created_at->format('d/m') }})</small></td>
-                                        <td><strong>{{ $order->user?->name ?? 'Anonim / Mahasiswa' }}</strong></td>
+                                        <td><strong>{{ $order->profilCustomer?->name ?? 'Customer' }}</strong></td>
                                         <td>Rp {{ number_format($order->total_amount, 0, ',', '.') }}</td>
                                         <td>
                                             @if($order->status == 'baru')
