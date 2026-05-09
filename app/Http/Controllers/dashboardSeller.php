@@ -16,10 +16,12 @@ class dashboardSeller extends Controller
     public function index()
     {
         $today = Carbon::today();
-        $seller = Auth::guard('seller')->user(); // Ambil data seller yang login
-        $sellerId = $seller->id;
+        $sellerId = Auth::guard('seller')->id();
+        
+        // Ambil data seller terbaru langsung dari DB agar is_open 
+        $seller = AkunSellerModel::findOrFail($sellerId);
+        $isTokoBuka = $seller->is_open; 
 
-        // PERBAIKAN 1: Ganti 'user' jadi 'profilCustomer'
         $riwayatPesanan = Order::with('profilCustomer')
             ->where('id_seller', $sellerId)
             ->orderBy('created_at', 'desc')
@@ -62,21 +64,16 @@ class dashboardSeller extends Controller
     // Fungsi Switch Buka/Tutup Toko
    public function toggleStatus(Request $request)
     {
-        $seller = AkunSellerModel::findOrFail(Auth::guard('seller')->id());
+        $sellerId = Auth::guard('seller')->id();
+        // Gunakan update langsung ke DB agar lebih pasti
+        $seller = AkunSellerModel::findOrFail($sellerId);
+        $statusBaru = ($seller->is_open == 1) ? 0 : 1;
         
-        
-        dd("Tombol berhasil ditekan!", "Status di database saat ini:", $seller->is_open);
+        $seller->update(['is_open' => $statusBaru]);
 
-        
-        if ($seller->is_open == 1) {
-            $seller->is_open = 0;
-        } else {
-            $seller->is_open = 1;
-        }
-        $seller->save();
-
-        return back()->with('success', 'Status operasional berhasil diubah!');
+        return back()->with('success', 'Status operasional berhasil diperbarui!');
     }
+        
     // Polling Daftar Order Real-time
     public function getOrderData(Request $request)
     {

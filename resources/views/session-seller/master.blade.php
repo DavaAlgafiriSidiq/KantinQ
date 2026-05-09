@@ -158,6 +158,75 @@
             </div>
 
     </div>
+    <div class="card mt-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Antrean Pesanan Real-Time</h5>
+        <select id="filter-status" class="form-select w-auto">
+            <option value="semua">Semua Status</option>
+            <option value="baru">Pesanan Baru</option>
+            <option value="diproses">Sedang Dimasak</option>
+            <option value="siap_diambil">Siap Diambil</option>
+        </select>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Waktu & ETA</th>
+                    <th>Detail Pesanan</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="order-list-body">
+                </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function refreshOrders() {
+    let status = $('#filter-status').val();
+    $.ajax({
+        url: "{{ route('seller.orders.data') }}",
+        type: "GET",
+        data: { status: status },
+        success: function(response) {
+            let rows = '';
+            response.orders.forEach(order => {
+                let items = order.order_items.map(i => `<li>${i.quantity}x ${i.menu?.nama_produk || 'Menu'}</li>`).join('');
+                
+                // Logika Tombol Aksi (AC 2)
+                let btn = '';
+                if(order.status == 'baru') btn = `<button onclick="updateStatus(${order.id}, 'diproses')" class="btn btn-sm btn-info">Terima & Masak</button>`;
+                else if(order.status == 'diproses') btn = `<button onclick="updateStatus(${order.id}, 'siap_diambil')" class="btn btn-sm btn-warning">Siap Diambil</button>`;
+                else if(order.status == 'siap_diambil') btn = `<button onclick="updateStatus(${order.id}, 'selesai')" class="btn btn-sm btn-success">Selesai</button>`;
+
+                rows += `
+                <tr>
+                    <td>${order.time_formatted} <br> <small class="text-danger">ETA: ${order.eta} Menit</small></td>
+                    <td><ul class="mb-0">${items}</ul></td>
+                    <td>Rp ${parseInt(order.total_amount).toLocaleString()}</td>
+                    <td><span class="badge bg-label-secondary">${order.status.toUpperCase()}</span></td>
+                    <td>${btn}</td>
+                </tr>`;
+            });
+            $('#order-list-body').html(rows || '<tr><td colspan="5" class="text-center">Tidak ada antrean</td></tr>');
+        }
+    });
+}
+
+function updateStatus(id, status) {
+    $.post(`/seller/orders/${id}/status`, { _token: '{{ csrf_token() }}', status: status }, function() {
+        refreshOrders();
+    });
+}
+
+// Auto Refresh setiap 5 detik (AC 6)
+setInterval(refreshOrders, 5000);
+$(document).ready(refreshOrders);
+</script>
     
 
     <script src="{{ asset('assets-dashboard/vendor/libs/jquery/jquery.js') }}"></script>
