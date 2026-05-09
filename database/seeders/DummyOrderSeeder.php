@@ -16,7 +16,7 @@ class DummyOrderSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
         // Ambil ID Seller paling baru (id kamu yang sedang login)
-        $sellerId = DB::table('seller')->max('id');
+        $sellerId = 14;
 
         if (!$sellerId) {
             $this->command->error('Belum ada akun seller! Daftar dulu ya.');
