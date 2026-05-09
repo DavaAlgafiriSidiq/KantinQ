@@ -41,7 +41,7 @@ Route::middleware('auth:seller')->controller(AkunSellerController::class)->group
     // SELLER (DASHBOARD)   
     Route::get('/seller', [dashboardSeller::class, 'index'])->name('master');
     // Route untuk mengubah status toko 
-    Route::post('/dashboard-seller/toggle-status', [dashboardSeller::class, 'toggleStatus'])->name('seller.toggle-status');
+   Route::post('/dashboard-seller/toggle-status', [dashboardSeller::class, 'toggleStatus'])->name('seller.toggle-status');
 
     //  ROUTE  UNTUK FITUR REAL-TIME ANTREAN 
     Route::get('/seller/orders/data', [dashboardSeller::class, 'getOrderData'])->name('seller.orders.data');

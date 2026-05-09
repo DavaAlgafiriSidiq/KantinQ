@@ -13,14 +13,17 @@ return new class extends Migration
     {
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_order')->constrained('orders')->onDelete('cascade');
+            $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
             $table->foreignId('id_produk')->constrained('produks')->onDelete('cascade');
             $table->foreignId('id_profil_customer')->constrained('profil_customers')->onDelete('cascade');
-            $table->integer('stok'); //  Dihitung untuk Top 3 Menu
-            $table->integer('harga');
+            
+            $table->integer('quantity'); 
+            $table->integer('price');
+            
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.
