@@ -32,8 +32,7 @@
     <div class="container">
         <h2 class="mb-4">Daftar Menu</h2>
 
-<!-- Untuk filter kategori produk -->
-        <form method="GET"
+<form method="GET"
             action="{{ route('session-customer.menu') }}"
             class="mb-4">
             <div class="row">
@@ -68,8 +67,9 @@
                             style="height: 180px; object-fit: cover;" 
                             alt="{{ $product->nama_produk }}">
                         
-                            <div class="card-body p-3 d-flex flex-column">                            {{-- Badge Kategori }}
-                            <span class="badge bg-light text-dark mb-2" style="font-size: 0.75rem; border: 1px solid #ddd;">
+                            <div class="card-body p-3 d-flex flex-column"> 
+                            {{-- Badge Kategori --}}
+                            <span class="badge bg-light text-dark mb-2" style="font-size: 0.75rem; border: 1px solid #ddd; width: fit-content;">
                                 {{ $product->kategori->nama_kategori ?? 'Umum' }}
                             </span>
 
@@ -111,9 +111,29 @@
                                     </button>
                                 </form>
 
-                                <button class="btn btn-link text-decoration-none p-0" style="color: #6c757d; font-size: 1.5rem; line-height: 1;">
-                                    <i class="far fa-heart"></i>
-                                </button>
+                                {{-- Logika Ikon Hati: Cek Database untuk Warna --}}
+                                @php
+                                    $isFavorite = \App\Models\Favorite::where('id_user', Auth::id())
+                                                    ->where('id_produk', $product->id)
+                                                    ->first();
+                                @endphp
+
+                                @if($isFavorite)
+                                    <form action="{{ route('favorites.destroy', $isFavorite->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-link text-decoration-none p-0">
+                                            <i class="fas fa-heart text-danger" style="font-size: 1.5rem;"></i>
+                                        </button>
+                                    </form>
+                                @else
+                                    <form action="{{ route('favorites.toggle', $product->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-link text-decoration-none p-0" style="color: #6c757d;">
+                                            <i class="far fa-heart" style="font-size: 1.5rem;"></i>
+                                        </button>
+                                    </form>
+                                @endif
 
                             </div>
                         </div>

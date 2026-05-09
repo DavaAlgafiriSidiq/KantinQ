@@ -11,38 +11,38 @@ use Illuminate\Support\Facades\Auth;
 class KeranjangController extends Controller
 {
     public function tambahKeKeranjang(Request $request, int $id) {
-        if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'Silakan login dulu');
-        }
-
-        $user = Auth::user();
-        $customer = $user->profilCustomer ?: $user->profilCustomer()->create(['name' => $user->name]);
-
-        $produk = produk::findOrFail($id);
-    
-
-        if (!$customer) {
-            return redirect()->back()->with('error', 'Profil belum lengkap. Silakan isi profil di menu My Profile.');
-        }
-
-        $itemAda = keranjang::where('id_profil_customer', $customer->id)
-                            ->where('id_produk', $id)
-                            ->first();
-
-        if ($itemAda) {
-            $itemAda->update(['jumlah' => $itemAda->jumlah + 1]);
-        } else {
-            keranjang::create([
-                'id_profil_customer' => $customer->id,
-                'id_produk' => $id,
-                'id_seller' => $produk->id_seller,
-                'jumlah' => 1,
-                'catatan' => $request->catatan,
-            ]);
-        }
-
-        return redirect()->back()->with('success', 'Berhasil ditambah ke keranjang!');
+    if (!Auth::check()) {
+        return redirect()->route('login')->with('error', 'Silakan login dulu');
     }
+
+    $user = Auth::user();
+    $customer = $user->profilCustomer ?: $user->profilCustomer()->create(['name' => $user->name]);
+
+    $produk = produk::findOrFail($id);
+
+    if (!$customer) {
+        return redirect()->back()->with('error', 'Profil belum lengkap. Silakan isi profil di menu My Profile.');
+    }
+
+    $itemAda = keranjang::where('id_profil_customer', $customer->id)
+                        ->where('id_produk', $id)
+                        ->first();
+
+    if ($itemAda) {
+        $itemAda->update(['jumlah' => $itemAda->jumlah + 1]);
+    } else {
+        keranjang::create([
+            'id_profil_customer' => $customer->id,
+            'id_produk' => $id,
+            'id_seller' => $produk->id_seller,
+            'jumlah' => 1,
+            'catatan' => $request->catatan,
+        ]);
+    }
+
+    // Redirect ke nama route 'keranjang' sesuai di web.php kamu
+    return redirect()->route('keranjang')->with('success', 'Menu berhasil dipesan lagi!');
+}
 
     public function tampilkanKeranjang()
     {
