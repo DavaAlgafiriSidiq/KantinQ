@@ -9,7 +9,7 @@ class OrderItem extends Model
     // Nama tabel di database
     protected $table = 'order_items';
 
-    // Kolom yang boleh diisi (mass assignment)
+    // Kolom yang boleh diisi 
     protected $fillable = [
         'id_order', 
         'id_produk', 
@@ -24,10 +24,10 @@ class OrderItem extends Model
         return $this->belongsTo(Order::class, 'id_order');
     }
 
-    // Relasi ke tabel Produk (sebelumnya menu)
+    // Relasi ke tabel Produk 
     public function produk() 
     {
-        // Parameter kedua adalah nama kolom foreign key di tabel order_items
+       
         return $this->belongsTo(produk::class, 'id_produk');
     }
 

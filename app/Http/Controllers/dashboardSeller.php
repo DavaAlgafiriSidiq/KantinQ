@@ -39,12 +39,12 @@ class dashboardSeller extends Controller
             ->count();
 
         // AC 3: Top 3 Menu Terlaris hari ini
+        // AC 3: Top 3 Menu Terlaris hari ini
         $topMenus = OrderItem::join('orders', 'order_items.order_id', '=', 'orders.id')
             ->join('produks', 'order_items.id_produk', '=', 'produks.id') 
             ->where('orders.id_seller', $sellerId)
             ->whereDate('orders.created_at', $today)
-            // PERBAIKAN 2: Ganti 'stok' jadi 'quantity'
-            ->select('produks.nama_produk as name', DB::raw('SUM(order_items.quantity) as total_sold'))
+            ->select('produks.nama_produk as name', DB::raw('SUM(order_items.stok) as total_sold'))
             ->groupBy('produks.id', 'produks.nama_produk')
             ->orderByDesc('total_sold')
             ->limit(3)
