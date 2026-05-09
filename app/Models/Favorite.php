@@ -3,7 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Favorites extends Model
+class Favorite extends Model
 {
     protected $table = 'favorites';
     protected $fillable = ['id_user', 'id_produk', 'id_order'];
