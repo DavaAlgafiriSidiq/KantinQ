@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\produk;
 
 class dashboardSeller extends Controller
 {
@@ -39,15 +40,13 @@ class dashboardSeller extends Controller
             ->count();
 
         // AC 3: Top 3 Menu Terlaris hari ini
-        $topMenus = OrderItem::join('orders', 'order_items.order_id', '=', 'orders.id')
-            ->join('produks', 'order_items.id_produk', '=', 'produks.id') 
-            ->where('orders.id_seller', $sellerId)
-            ->whereDate('orders.created_at', $today)
-            ->select('produks.nama_produk as name', DB::raw('SUM(order_items.quantity) as total_sold'))
-            ->orderByDesc('total_sold')
+        $topMenus = produk::where('id_seller', $sellerId)
+            ->withSum(['orderItems' => function($query) use ($today) {
+                $query->whereDate('created_at', $today);
+            }], 'quantity') // Menghitung total kolom 'quantity' di tabel order_items
+            ->orderByDesc('order_items_sum_quantity') 
             ->limit(3)
             ->get();
-
         // Hitung pesanan berdasarkan status statis
         $pesananBaru = Order::where('id_seller', $sellerId)->where('status', 'baru')->count();
         $pesananDiproses = Order::where('id_seller', $sellerId)->where('status', 'diproses')->count();

@@ -6,38 +6,34 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderItem extends Model
 {
-    // Nama tabel di database
     protected $table = 'order_items';
 
-    // Kolom yang boleh diisi 
+  
     protected $fillable = [
-        'id_order', 
+        'order_id', 
         'id_produk', 
         'id_profil_customer', 
-        'stok', 
-        'harga'
+        'quantity', 
+        'price'     
     ];
 
-    // Relasi ke tabel Order
     public function order() 
     {
-        return $this->belongsTo(Order::class, 'id_order');
+        return $this->belongsTo(Order::class, 'order_id'); // Pakai order_id
     }
 
-    // Relasi ke tabel Produk 
     public function produk() 
     {
-       
         return $this->belongsTo(produk::class, 'id_produk');
     }
 
-    // Relasi ke tabel Profil Customer
     public function customer() 
     {
         return $this->belongsTo(profilCustomer::class, 'user_id');
     }
+
     public function menu() 
     {
-    return $this->belongsTo(Menu::class, 'id_produk'); 
+        return $this->belongsTo(Menu::class, 'id_produk'); 
     }
 }
