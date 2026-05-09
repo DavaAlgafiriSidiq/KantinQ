@@ -60,15 +60,23 @@ class dashboardSeller extends Controller
     }
 
     // Fungsi Switch Buka/Tutup Toko
-    public function toggleStatus(Request $request)
+   public function toggleStatus(Request $request)
     {
         $seller = AkunSellerModel::findOrFail(Auth::guard('seller')->id());
-        $seller->is_open = !$seller->is_open;
+        
+        
+        dd("Tombol berhasil ditekan!", "Status di database saat ini:", $seller->is_open);
+
+        
+        if ($seller->is_open == 1) {
+            $seller->is_open = 0;
+        } else {
+            $seller->is_open = 1;
+        }
         $seller->save();
 
         return back()->with('success', 'Status operasional berhasil diubah!');
     }
-
     // Polling Daftar Order Real-time
     public function getOrderData(Request $request)
     {
