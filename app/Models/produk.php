@@ -9,6 +9,7 @@ use Database\Factories\ProdukFactory;
 class produk extends Model
 {
     use HasFactory;
+   
 
     protected static function newFactory()
     {

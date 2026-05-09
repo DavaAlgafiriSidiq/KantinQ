@@ -180,52 +180,99 @@
                 </tr>
             </thead>
             <tbody id="order-list-body">
-                </tbody>
+                <tr><td colspan="5" class="text-center">Menghubungkan ke dapur...</td></tr>
+            </tbody>
         </table>
     </div>
 </div>
 
 <script>
-function refreshOrders() {
-    let status = $('#filter-status').val();
-    $.ajax({
-        url: "{{ route('seller.orders.data') }}",
-        type: "GET",
-        data: { status: status },
-        success: function(response) {
-            let rows = '';
-            response.orders.forEach(order => {
-                let items = order.order_items.map(i => `<li>${i.quantity}x ${i.menu?.nama_produk || 'Menu'}</li>`).join('');
+// Menunggu sampai seluruh halaman selesai dimuat
+document.addEventListener("DOMContentLoaded", function() {
+    
+    function refreshOrders() {
+        let status = document.getElementById('filter-status').value;
+        
+        // Panggil data dari Controller
+        fetch(`/seller/orders/data?status=${status}`)
+            .then(response => response.json())
+            .then(data => {
+                let rows = '';
                 
-                // Logika Tombol Aksi (AC 2)
-                let btn = '';
-                if(order.status == 'baru') btn = `<button onclick="updateStatus(${order.id}, 'diproses')" class="btn btn-sm btn-info">Terima & Masak</button>`;
-                else if(order.status == 'diproses') btn = `<button onclick="updateStatus(${order.id}, 'siap_diambil')" class="btn btn-sm btn-warning">Siap Diambil</button>`;
-                else if(order.status == 'siap_diambil') btn = `<button onclick="updateStatus(${order.id}, 'selesai')" class="btn btn-sm btn-success">Selesai</button>`;
+                // Kalau datanya kosong
+                if(!data.orders || data.orders.length === 0) {
+                    document.getElementById('order-list-body').innerHTML = '<tr><td colspan="5" class="text-center">Yeay, antrean kosong! Waktunya istirahat.</td></tr>';
+                    return;
+                }
 
-                rows += `
-                <tr>
-                    <td>${order.time_formatted} <br> <small class="text-danger">ETA: ${order.eta} Menit</small></td>
-                    <td><ul class="mb-0">${items}</ul></td>
-                    <td>Rp ${parseInt(order.total_amount).toLocaleString()}</td>
-                    <td><span class="badge bg-label-secondary">${order.status.toUpperCase()}</span></td>
-                    <td>${btn}</td>
-                </tr>`;
+                // Kalau ada data, kita gambar tabelnya
+                data.orders.forEach(order => {
+                    // Antisipasi perbedaan nama relasi (order_items vs orderItems)
+                    let itemsArray = order.order_items || order.orderItems || [];
+                    
+                    let itemsHtml = itemsArray.map(i => {
+                        // Antisipasi relasi menu vs produk
+                        let namaMenu = (i.menu && i.menu.nama_produk) ? i.menu.nama_produk : ((i.produk && i.produk.nama_produk) ? i.produk.nama_produk : 'Menu KantinQ');
+                        return `<li><small>${i.quantity}x ${namaMenu}</small></li>`;
+                    }).join('');
+                    
+                    // Siapkan Tombol Aksi
+                    let btn = '';
+                    let badge = '';
+                    
+                    if(order.status == 'baru') {
+                        badge = '<span class="badge bg-label-info">BARU</span>';
+                        btn = `<button onclick="updateStatus(${order.id}, 'diproses')" class="btn btn-sm btn-info">Masak</button>`;
+                    } else if(order.status == 'diproses') {
+                        badge = '<span class="badge bg-label-warning">DIMASAK</span>';
+                        btn = `<button onclick="updateStatus(${order.id}, 'siap_diambil')" class="btn btn-sm btn-warning">Selesai Masak</button>`;
+                    } else if(order.status == 'siap_diambil') {
+                        badge = '<span class="badge bg-label-primary">SIAP DIAMBIL</span>';
+                        btn = `<button onclick="updateStatus(${order.id}, 'selesai')" class="btn btn-sm btn-success">Serahkan</button>`;
+                    }
+
+                    rows += `
+                    <tr>
+                        <td><strong>${order.time_formatted || ''}</strong> <br> <small class="text-danger">ETA: ${order.eta || 0} Mnt</small></td>
+                        <td><ul class="mb-0 ps-3">${itemsHtml}</ul></td>
+                        <td>Rp ${parseInt(order.total_amount).toLocaleString('id-ID')}</td>
+                        <td>${badge}</td>
+                        <td>${btn}</td>
+                    </tr>`;
+                });
+                
+                // Tampilkan ke layar!
+                document.getElementById('order-list-body').innerHTML = rows;
+            })
+            .catch(error => {
+                console.error("Error AJAX KantinQ:", error);
+                document.getElementById('order-list-body').innerHTML = '<tr><td colspan="5" class="text-center text-danger">Gagal memuat antrean. Cek koneksi atau relasi database!</td></tr>';
             });
-            $('#order-list-body').html(rows || '<tr><td colspan="5" class="text-center">Tidak ada antrean</td></tr>');
-        }
-    });
-}
+    }
 
+    // Jalankan setiap filter diganti
+    document.getElementById('filter-status').addEventListener('change', refreshOrders);
+    
+    // Auto-refresh setiap 5 detik
+    setInterval(refreshOrders, 5000);
+    
+    // Panggil pertama kali
+    refreshOrders();
+});
+
+// Fungsi untuk klik tombol aksi
 function updateStatus(id, status) {
-    $.post(`/seller/orders/${id}/status`, { _token: '{{ csrf_token() }}', status: status }, function() {
-        refreshOrders();
+    fetch(`/seller/orders/${id}/status`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ status: status })
+    }).then(() => {
+        // Biarkan setInterval yang merefresh tabelnya
     });
 }
-
-// Auto Refresh setiap 5 detik (AC 6)
-setInterval(refreshOrders, 5000);
-$(document).ready(refreshOrders);
 </script>
     
 

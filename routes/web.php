@@ -46,6 +46,7 @@ Route::middleware('auth:seller')->controller(AkunSellerController::class)->group
     //  ROUTE  UNTUK FITUR REAL-TIME ANTREAN 
     Route::get('/seller/orders/data', [dashboardSeller::class, 'getOrderData'])->name('seller.orders.data');
     Route::post('/seller/orders/{id}/status', [dashboardSeller::class, 'updateOrderStatus'])->name('seller.orders.status');
+   
 
     // --- FITUR PROFIL SELLER ---
     Route::get('/seller/profil', 'indexProfil')->name('profil-seller.index');

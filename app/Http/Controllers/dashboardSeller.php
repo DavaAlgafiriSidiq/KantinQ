@@ -29,24 +29,24 @@ class dashboardSeller extends Controller
 
         $isTokoBuka = $seller->is_open; // Ambil status dari tabel seller
 
-        // AC 1: Total pendapatan hari ini
-        $totalPendapatan = Order::where('id_seller', $sellerId)
-             ->whereDate('created_at', $today)
-             ->where('status', 'selesai')
-            ->sum('total_amount'); 
 
-        // AC 2: Pesanan sukses hari ini
+        // 1. Hitung Pendapatan hanya dari yang statusnya 'selesai'
+        $totalPendapatan = Order::where('id_seller', $sellerId)
+            ->where('status', 'selesai')
+            ->sum('total_amount');
+
+        // 2. Hitung Pesanan yang sudah Selesai
         $pesananSelesai = Order::where('id_seller', $sellerId)
-            ->whereDate('created_at', $today)
             ->where('status', 'selesai')
             ->count();
 
-        // AC 3: Top 3 Menu Terlaris hari ini
-        $topMenus = produk::where('id_seller', $sellerId)
-            ->withSum(['orderItems' => function($query) use ($today) {
-                $query->whereDate('created_at', $today);
-            }], 'quantity') // Menghitung total kolom 'quantity' di tabel order_items
-            ->orderByDesc('order_items_sum_quantity') 
+        // 3. Ambil Top 3 Menu (Hitung dari order_items)
+        $topMenus = DB::table('order_items')
+            ->join('produks', 'order_items.id_produk', '=', 'produks.id')
+            ->select('produks.nama_produk as name', DB::raw('SUM(order_items.quantity) as total_sold'))
+            ->where('produks.id_seller', $sellerId)
+            ->groupBy('produks.id', 'produks.nama_produk')
+            ->orderBy('total_sold', 'desc')
             ->limit(3)
             ->get();
         // Hitung pesanan berdasarkan status statis
@@ -80,7 +80,7 @@ class dashboardSeller extends Controller
         $sellerId = Auth::guard('seller')->id();
         $statusFilter = $request->query('status');
 
-        $query = Order::with('orderItems.menu') // Detail menu
+        $query = \App\Models\Order::with('orderItems.produk') 
             ->where('id_seller', $sellerId)
             ->whereIn('status', ['baru', 'diproses', 'siap_diambil']);
 
@@ -104,11 +104,10 @@ class dashboardSeller extends Controller
             return $order;
         });
 
-        $baruCount = $orders->where('status', 'baru')->count();
 
         return response()->json([
             'orders' => $orders,
-            'baru_count' => $baruCount
+            'baru_count' => $orders->where('status', 'baru')->count()
         ]);
     }
 
@@ -121,4 +120,5 @@ class dashboardSeller extends Controller
 
         return response()->json(['success' => true]);
     }
+    
 }

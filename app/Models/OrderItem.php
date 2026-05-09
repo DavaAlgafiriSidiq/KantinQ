@@ -22,9 +22,9 @@ class OrderItem extends Model
         return $this->belongsTo(Order::class, 'order_id'); 
     }
 
-    public function produk() 
+    public function produk()
     {
-        return $this->belongsTo(produk::class, 'id_produk');
+        return $this->belongsTo(produk::class, 'id_produk', 'id');
     }
 
     public function customer() 
