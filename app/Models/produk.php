@@ -12,25 +12,22 @@ class produk extends Model
 
     protected static function newFactory()
     {
-        // Arahkan ke file factory yang benar
         return ProdukFactory::new();
     }
+    
     protected $table = 'produks';
+    
     protected $fillable = ['id_seller', 'id_kategori', 'nama_produk', 'deskripsi', 'harga', 'stok', 'status', 'foto_produk'];
+    
     public function kategori()
     {
         return $this->belongsTo(kategori::class, 'id_kategori');
     }
+    
     public function seller()
     {
         return $this->belongsTo(AkunSellerModel::class, 'id_seller');
     }
-    
-    public function orderItems()
-{
-    // Relasi: Satu produk bisa ada di banyak baris order_items
-    return $this->hasMany(OrderItem::class, 'id_produk');
-}
 
     // Fungsi untuk mendapatkan badge kategori
     public function badgeKategori()
@@ -45,9 +42,14 @@ class produk extends Model
 
         // Ambil data berdasarkan id_kategori produk
         $kategori = $listKategori[$this->id_kategori] ?? ['label' => 'Tanpa Kategori', 'color' => 'secondary'];
-        
 
         // Return HTML Badge
         return '<span class="badge bg-label-' . $kategori['color'] . ' me-1">' . $kategori['label'] . '</span>';
+    }
+    
+    // Relasi ke tabel order_items
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class, 'id_produk');
     }
 }
