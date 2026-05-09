@@ -41,7 +41,7 @@
                                         <span>Upload Foto Baru</span>
                                         <input type="file" id="upload" name="foto" hidden accept="image/png, image/jpeg" />
                                     </label>
-                                    <button type="button" class="btn btn-outline-secondary btn-sm fw-bold" id="resetFoto">Reset</button>
+                                    <button type="button" class="btn btn-secondary btn-sm fw-bold" id="resetFoto">Reset</button>
                                 </div>
                                 <p class="text-muted mb-0 small mt-1">Format: JPG, PNG. Maks: 2MB.</p>
                                 <div id="error-message" class="text-danger small fw-bold mt-1" style="display: none;">File terlalu besar! Maksimal 2MB.</div>
