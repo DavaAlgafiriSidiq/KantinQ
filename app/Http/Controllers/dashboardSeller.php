@@ -38,13 +38,11 @@ class dashboardSeller extends Controller
             ->count();
 
         // AC 3: Top 3 Menu Terlaris hari ini
-        $topMenus = OrderItem::join('orders', 'order_items.id_order', '=', 'orders.id')
-            // UBAH: Gunakan tabel 'produks' dan kolom 'id_produk'
+        $topMenus = OrderItem::join('orders', 'order_items.order_id', '=', 'orders.id')
             ->join('produks', 'order_items.id_produk', '=', 'produks.id') 
             ->where('orders.id_seller', $sellerId)
             ->whereDate('orders.created_at', $today)
-            // UBAH: Select dari 'produks' dan gunakan alias 'name' agar view master.blade.php tidak error
-            ->select('produks.nama_produk as name', DB::raw('SUM(order_items.quantity) as total_sold'))
+            ->select('produks.nama_produk as name', DB::raw('SUM(order_items.stok) as total_sold'))
             ->groupBy('produks.id', 'produks.nama_produk')
             ->orderByDesc('total_sold')
             ->limit(3)
