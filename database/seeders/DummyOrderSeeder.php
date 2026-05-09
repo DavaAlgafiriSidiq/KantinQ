@@ -16,7 +16,7 @@ class DummyOrderSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
         //  Ambil ID Seller milikmu 
-        $sellerId = DB::table('seller')->min('id');
+        $sellerId = DB::table('seller')->max('id');
         if (!$sellerId) {
             $this->command->error('Belum ada akun seller! Register dulu 1 akun seller di web ya.');
             return;
