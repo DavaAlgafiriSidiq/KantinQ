@@ -30,7 +30,7 @@ class dashboardSeller extends Controller
              ->whereDate('created_at', $today)
              ->where('status', 'selesai')
             ->sum('total_amount'); 
-            
+
         // AC 2: Pesanan sukses hari ini
         $pesananSelesai = Order::where('id_seller', $sellerId)
             ->whereDate('created_at', $today)
@@ -39,11 +39,13 @@ class dashboardSeller extends Controller
 
         // AC 3: Top 3 Menu Terlaris hari ini
         $topMenus = OrderItem::join('orders', 'order_items.id_order', '=', 'orders.id')
-            ->join('menus', 'order_items.id_menu', '=', 'menus.id') // Ganti 'menus' dengan nama tabel produkmu jika beda
+            // UBAH: Gunakan tabel 'produks' dan kolom 'id_produk'
+            ->join('produks', 'order_items.id_produk', '=', 'produks.id') 
             ->where('orders.id_seller', $sellerId)
             ->whereDate('orders.created_at', $today)
-            ->select('menus.nama_produk', DB::raw('SUM(order_items.quantity) as total_sold'))
-            ->groupBy('menus.id', 'menus.nama_produk')
+            // UBAH: Select dari 'produks' dan gunakan alias 'name' agar view master.blade.php tidak error
+            ->select('produks.nama_produk as name', DB::raw('SUM(order_items.quantity) as total_sold'))
+            ->groupBy('produks.id', 'produks.nama_produk')
             ->orderByDesc('total_sold')
             ->limit(3)
             ->get();
