@@ -39,6 +39,7 @@ Route::post('/logout', [\App\Http\Controllers\CustomerAuthController::class, 'lo
 Route::middleware('auth:seller')->controller(AkunSellerController::class)->group(function () {
 
     // SELLER (DASHBOARD)   
+    Route::get('/seller', [dashboardSeller::class, 'index'])->name('master');
     // Route untuk mengubah status toko 
     Route::post('/dashboard-seller/toggle-status', [dashboardSeller::class, 'toggleStatus'])->name('seller.toggle-status');
 
