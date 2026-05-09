@@ -29,6 +29,8 @@ class AkunSellerModel extends Authenticatable
         'nomor_hp',       
         'deskripsi_toko', 
         'foto_profil',
+        'is_open', 
+  
     ];
 
     protected $hidden = [

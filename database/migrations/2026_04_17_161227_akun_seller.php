@@ -15,6 +15,8 @@ return new class extends Migration {
             $table->string('username');
             $table->string('email');
             $table->string('password');
+            $table->boolean('is_open')->default(false); 
+            
             $table->timestamps();
         });
     }
