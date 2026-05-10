@@ -1,6 +1,11 @@
 @extends('session-customer.landing-layout')
 
 @section('content')
+@if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
 
 <div class="container mt-4"> {{-- Tambah container agar sejajar dengan konten --}}
     @if(session('error'))
@@ -75,6 +80,8 @@
 
                             {{-- Nama Produk --}}
                             <h5 class="card-title fw-bold mb-1">{{ $product->nama_produk }}</h5>
+
+                            <p>ID Produk: {{ $product->id }}</p>
                             
                             {{-- Nama Toko (Dibuat sedikit lebih menonjol) --}}
                             <p class="card-text text-muted mb-2" style="font-size: 0.9rem; font-weight: 500;">
@@ -99,6 +106,15 @@
                             {{-- Harga --}}
                             <p class="card-text fw-bold fs-3 mb-3 text-dark">
                                 Rp {{ number_format($product->harga, 0, ',', '.') }}
+                            </p>
+
+                            <p class="text-warning mb-1">
+                                ⭐ 
+                                {{ $product->ratings_avg_rating 
+                                    ? number_format($product->ratings_avg_rating, 1) 
+                                    : '0.0' }}
+
+                                ({{ $product->ratings->count() }} ulasan)
                             </p>
                             
                             {{-- Tombol Keranjang dan Favorit --}}

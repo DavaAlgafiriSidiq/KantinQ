@@ -53,4 +53,9 @@ class produk extends Model
     {
         return $this->hasMany(OrderItem::class, 'id_produk');
     }
+
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class, 'produk_id', 'id');
+    }
 }

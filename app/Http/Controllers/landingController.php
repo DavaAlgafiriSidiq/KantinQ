@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Produk;
+use App\Models\produk;
 use App\Models\Kategori;
 
 class LandingController extends Controller
@@ -10,7 +10,7 @@ class LandingController extends Controller
     public function menu()
         {
             // Ambil produk beserta relasi seller dan kategori
-            $query = Produk::with(['seller', 'kategori']);
+            $query = produk::with(['seller', 'kategori', 'ratings']);
 
             // Kalau user memilih kategori
             if (request()->filled('kategori')) {
@@ -20,7 +20,9 @@ class LandingController extends Controller
             }
 
             // Ambil data produk
-            $products = $query->latest()->get();
+            $products = $query->withAvg('ratings', 'rating')
+                ->latest()
+                ->get();
 
             // Ambil semua kategori untuk dropdown
             $categories = Kategori::all();

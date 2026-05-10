@@ -10,6 +10,7 @@ use App\Http\Controllers\landingController;
 use App\Http\Controllers\KeranjangController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\FavoritesController;
+use App\Http\Controllers\RatingController;
 
 Route::get('/', function () {
     return view('landing');
@@ -98,5 +99,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/favorites/toggle/{id_produk}', [FavoritesController::class, 'toggleFavorite'])->name('favorites.toggle');
     Route::delete('/favorites/{id}', [FavoritesController::class, 'destroy'])->name('favorites.destroy');
 });
+
+//ROUTE UNTUK RATING & ULASAN
+Route::get('/rating/{id}', [RatingController::class, 'create'])->name('rating.create');
+
+Route::post('/rating/store', [RatingController::class, 'store'])->name('rating.store');
 });
 
