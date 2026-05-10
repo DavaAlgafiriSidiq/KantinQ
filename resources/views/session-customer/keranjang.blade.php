@@ -11,7 +11,7 @@
                 {{ $keranjang->count() }} item dalam keranjang
             </p>
         </div>
-        <a href="{{ route('session-customer.menu') }}" class="btn btn-outline-warning btn-sm">
+        <a href="{{ route('session-customer.menu') }}" class="btn btn-warning btn-sm">
             <i class="fas fa-arrow-left me-1"></i>Lanjut Belanja
         </a>
     </div>
@@ -42,10 +42,16 @@
                                     {{-- Nama & Foto Menu --}}
                                     <td class="ps-4 py-3">
                                         <div class="d-flex align-items-center gap-3">
-                                            <img src="{{ asset('images/foto_produk/' . ($item->produk->foto_produk ?? 'default.png')) }}"
-                                                alt="{{ $item->produk->nama_produk }}"
+                                        {{-- Foto --}}
+                                        @if($item->produk->foto_produk)
+                                            <img src="{{ asset($item->produk->foto_produk) }}" alt="{{ $item->produk->nama_produk }}"  alt="{{ $item->produk->nama_produk }}"
                                                 class="rounded-3 object-fit-cover"
                                                 style="width:64px;height:64px;">
+                                        @else
+                                            <img src="{{ asset('images/foto_produk/default.png') }}" alt="{{ $item->produk->nama_produk }}"
+                                                class="rounded-3 object-fit-cover"
+                                                style="width:64px;height:64px;">
+                                        @endif
                                             <div>
                                                 <p class="fw-semibold mb-0">{{ $item->produk->nama_produk }}</p>
                                                 <p class="text-muted small mb-0">{{ $item->seller->nama_toko }}</p>
@@ -61,17 +67,34 @@
                                     </td>
 
                                     {{-- Jumlah --}}
-                                    <td class="py-3 text-center">
-                                        <div class="d-flex align-items-center justify-content-center gap-1">
-                                            {{-- Ganti jumlah pake form atau link --}}
-                                            <span class="fw-bold px-2">{{ $item->jumlah }}x</span>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center">
+                                            <div class="input-group input-group-sm" style="width: 110px;">
+                                                <button class="btn btn-warning btn-update-qty px-2" 
+                                                        data-id="{{ $item->id }}" data-action="decrease">
+                                                    <i class="fas fa-minus small"></i>
+                                                </button>
+                                                
+                                                <span class="form-control text-center fw-bold bg-white border-warning py-1" 
+                                                    id="qty-{{ $item->id }}" style="cursor: default;">
+                                                    {{ $item->jumlah }}
+                                                </span>
+                                                
+                                                <button class="btn btn-warning btn-update-qty px-2" 
+                                                        data-id="{{ $item->id }}" data-action="increase">
+                                                    <i class="fas fa-plus small"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                     </td>
 
-                                    {{-- Subtotal --}}
-                                    <td class="py-3 text-center fw-bold">
-                                        Rp {{ number_format($item->produk->harga * $item->jumlah, 0, ',', '.') }}
+                                    <!-- Subtotal -->
+                                    <td class="text-end fw-bold">
+                                        Rp <span id="subtotal-item-{{ $item->id }}">
+                                            {{ number_format($item->jumlah * $item->produk->harga, 0, ',', '.') }}
+                                        </span>
                                     </td>
+
 
                                     {{-- Hapus --}}
                                     <td class="pe-4 py-3 text-center">

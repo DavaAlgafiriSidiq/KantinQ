@@ -640,5 +640,48 @@
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+      <!-- Real-time Order Notification -->
+    <script>
+      let lastOrderCount = 0;
+
+      function pollNewOrders() { // Nama fungsi JS diganti
+          $.ajax({
+              url: "{{ route('seller.orders.checkNew') }}", // Menggunakan route baru
+              method: 'GET',
+              success: function(response) {
+                  // Logika notifikasi
+                  if (response.count > lastOrderCount) {
+                      // Mainkan suara
+                      let audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
+                      audio.play();
+
+                      // SweetAlert Notif
+                      Swal.fire({
+                          title: 'Ada Pesanan!',
+                          text: 'Kamu punya ' + response.count + ' pesanan baru yang belum diproses.',
+                          icon: 'warning',
+                          toast: true,
+                          position: 'top-end',
+                          showConfirmButton: false,
+                          timer: 4000
+                      });
+
+                      // Opsional: Jika kamu punya fungsi untuk refresh tabel pesanan tanpa reload
+                      if (typeof loadOrderTable === "function") {
+                          loadOrderTable(); 
+                      }
+                  }
+                  lastOrderCount = response.count;
+              },
+              error: function(xhr) {
+                  console.log("Gagal mengecek pesanan baru");
+              }
+          });
+      }
+
+      // Cek setiap 3 detik (memenuhi kriteria < 5 detik)
+      setInterval(pollNewOrders, 3000);
+  </script>
   </body>
 </html>

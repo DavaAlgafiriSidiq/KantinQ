@@ -352,6 +352,57 @@
     <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script>
     <script src="{{ asset('assets-landing/vendors/fontawesome/all.min.js') }}"></script>
     <script src="{{ asset('assets-landing/js/theme.js') }}"></script>
+    <!-- JS untuk tambah jumlah pesanan di keranjang -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        $('.btn-update-qty').on('click', function() {
+            const id = $(this).data('id');
+            const action = $(this).data('action');
+            const btn = $(this);
+
+            btn.prop('disabled', true); // Mencegah spam klik
+
+            $.ajax({
+                url: `/keranjang/update-jumlah/${id}`,
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    action: action
+                },
+                success: function(response) {
+                    // Update angka jumlah di baris tersebut
+                    $(`#qty-${id}`).text(response.jumlah);
+                    // Update subtotal per item
+                    $(`#subtotal-item-${id}`).text(response.newSubtotalItem);
+                    // Update total belanja di bawah (asumsikan ID-nya 'total-keranjang')
+                    $(`#total-keranjang`).text(response.totalKeranjang);
+                    
+                    btn.prop('disabled', false);
+                },
+                error: function(xhr) {
+                    alert(xhr.responseJSON.error || 'Terjadi kesalahan');
+                    btn.prop('disabled', false);
+                }
+            });
+        });
+    });
+    </script>
+
+    <!-- alert sukses masuk keranjang -->
+    @if(session('success_masuk'))
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: "{{ session('success_masuk') }}",
+            showConfirmButton: false,
+            timer: 1500, // Notif hilang sendiri dalam 1.5 detik
+            borderRadius: '15px'
+        });
+    </script>
+    @endif
 
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@200;300;400;600;700;900&amp;display=swap" rel="stylesheet">
 </body>

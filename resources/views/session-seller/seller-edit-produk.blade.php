@@ -1,6 +1,22 @@
 @extends('session-seller.layout-seller') 
 
 @section('content')
+@if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 <div class="content-wrapper">
     <div class="container-xxl flex-grow-1 container-p-y">
         <h4 class="fw-bold py-3 mb-4">
@@ -15,18 +31,7 @@
                     </div>
                     <div class="card-body">
                         <form action="{{ route('produk.update', $produk->id) }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT') 
-
-                            <div class="row mb-3">
-                                <label class="col-sm-2 col-form-label">Nama Produk</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control @error('nama_produk') is-invalid @enderror" 
-                                           name="nama_produk" value="{{ old('nama_produk', $produk->nama_produk) }}" required />
-                                    @error('nama_produk') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                                </div>
-                            </div>
-
+                            @csrf 
                             <div class="row mb-3">
                                 <label class="col-sm-2 col-form-label">Kategori</label>
                                 <div class="col-sm-10">
@@ -43,9 +48,18 @@
                             </div>
 
                             <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label">Nama Produk</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="nama_produk" class="form-control @error('nama_produk') is-invalid @enderror" 
+                                           value="{{ old('nama_produk', $produk->nama_produk) }}" required>
+                                    @error('nama_produk') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
                                 <label class="col-sm-2 col-form-label">Deskripsi</label>
                                 <div class="col-sm-10">
-                                    <textarea name="deskripsi" class="form-control @error('deskripsi') is-invalid @enderror" required>{{ old('deskripsi', $produk->deskripsi) }}</textarea>
+                                    <textarea name="deskripsi" class="form-control @error('deskripsi') is-invalid @enderror" rows="3" required>{{ old('deskripsi', $produk->deskripsi) }}</textarea>
                                     @error('deskripsi') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                 </div>
                             </div>
@@ -65,8 +79,7 @@
                             <div class="row mb-3">
                                 <label class="col-sm-2 col-form-label">Stok</label>
                                 <div class="col-sm-10">
-                                    <input type="number" name="stok" class="form-control @error('stok') is-invalid @enderror" 
-                                           value="{{ old('stok', $produk->stok) }}" required />
+                                    <input type="number" name="stok" class="form-control @error('stok') is-invalid @enderror" value="{{ old('stok', $produk->stok) }}" min="0">
                                     @error('stok') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                 </div>
                             </div>
@@ -75,41 +88,47 @@
                                 <label class="col-sm-2 col-form-label">Status</label>
                                 <div class="col-sm-10">
                                     <select name="status" class="form-select @error('status') is-invalid @enderror" required>
-                                        <option value="available" {{ old('status', $produk->status) == 'Ditampilkan' ? 'selected' : '' }}>Available</option>
-                                        <option value="unavailable" {{ old('status', $produk->status) == 'Diarsipkan' ? 'selected' : '' }}>Unavailable</option>
+                                        <option value="available" {{ old('status', $produk->status) == 'available' ? 'selected' : '' }}>Available (Tampilkan)</option>
+                                        <option value="unavailable" {{ old('status', $produk->status) == 'unavailable' ? 'selected' : '' }}>Unavailable (Arsipkan)</option>
                                     </select>
                                     @error('status') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                 </div>
                             </div>
 
-                            <div class="mb-4 pb-4 border-bottom">
-                                <h5 class="mb-3">Foto Produk</h5>
-                                <div class="row mb-3">
-                                    <div class="col-sm-2">
-                                        <p class="small text-muted">Foto Saat Ini:</p>
+                            <div class="row mb-4">
+                                <label class="col-sm-2 col-form-label">Foto Produk</label>
+                                <div class="col-sm-10">
+                                    <div class="d-flex align-items-start gap-4">
                                         @if($produk->foto_produk)
-                                            <img src="{{ asset($produk->foto_produk) }}" alt="Current Photo" class="img-fluid rounded shadow-sm" style="max-height: 100px">
+                                            <img src="{{ asset($produk->foto_produk) }}" alt="Current Photo" class="d-block rounded shadow-sm" height="100" width="100" id="uploadedAvatar">
                                         @else
-                                            <span class="badge bg-label-secondary">Tidak ada foto</span>
+                                            <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width:100px; height:100px;">
+                                                <i class="bx bx-image text-muted"></i>
+                                            </div>
                                         @endif
+                                        <div class="button-wrapper">
+                                            <label for="upload" class="btn btn-primary btn-sm me-2 mb-2" tabindex="0">
+                                                <span class="d-none d-sm-block">Upload Foto Baru</span>
+                                                <i class="bx bx-upload d-block d-sm-none"></i>
+                                                <input type="file" id="upload" name="foto_produk" class="account-file-input" hidden accept="image/png, image/jpeg">
+                                            </label>
+                                            <p class="text-muted mb-0 small">JPG atau PNG. Maksimal 2MB.</p>
+                                        </div>
                                     </div>
-                                    <div class="col-sm-10">
-                                        <label class="form-label">Ganti Foto Produk (Opsional)</label>
-                                        <input type="file" class="form-control @error('foto_produk') is-invalid @enderror" name="foto_produk">
-                                        @error('foto_produk') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                                        <small class="text-muted d-block mt-1">Biarkan kosong jika tidak ingin mengganti foto. Maksimal 2MB.</small>
-                                    </div>
+                                    @error('foto_produk') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                                 </div>
                             </div>
 
                             <div class="row justify-content-end">
                                 <div class="col-sm-10">
-                                    <button type="submit" class="btn btn-warning">Update Data</button>
-                                    <a href="{{ route('produk.index') }}" class="btn btn-secondary">Batal</a>
+                                    <button type="submit" class="btn btn-warning text-white fw-bold">
+                                        <i class="bx bx-save me-1"></i> Simpan Perubahan
+                                    </button>
+                                    <a href="{{ route('produk.index') }}" class="btn btn-outline-secondary">Batal</a>
                                 </div>
                             </div>
                         </form>
-                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\produk;
+use App\Models\AkunSellerModel;
+use App\Models\profilCustomer;
 
 class keranjang extends Model
 {

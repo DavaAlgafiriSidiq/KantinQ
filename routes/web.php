@@ -48,6 +48,7 @@ Route::middleware('auth:seller')->controller(AkunSellerController::class)->group
     //  ROUTE  UNTUK FITUR REAL-TIME ANTREAN 
     Route::get('/seller/orders/data', [dashboardSeller::class, 'getOrderData'])->name('seller.orders.data');
     Route::post('/seller/orders/{id}/status', [dashboardSeller::class, 'updateOrderStatus'])->name('seller.orders.status');
+    Route::get('/seller/orders/check-new', [dashboardSeller::class, 'checkIncomingOrders'])->name('seller.orders.checkNew');
    
 
     // --- FITUR PROFIL SELLER ---
@@ -59,7 +60,7 @@ Route::middleware('auth:seller')->controller(AkunSellerController::class)->group
     Route::get('/seller-produk', [ProdukController::class, 'index'])->name('produk.index');
     Route::get('/seller-tambah-produk', [ProdukController::class, 'create'])->name('produk.create');
     Route::get('/seller-edit-produk/{id}', [ProdukController::class, 'edit'])->name('produk.edit');
-    Route::put('/seller-update-produk/{id}', [ProdukController::class, 'update'])->name('produk.update');
+    Route::post('/seller-update-produk/{id}', [ProdukController::class, 'update'])->name('produk.update');
 
     Route::post('/seller-simpan-produk', [ProdukController::class, 'simpan'])->name('produk.simpan');
     Route::delete('/seller-hapus-produk/{id}', [ProdukController::class, 'destroy'])->name('produk.destroy');
@@ -85,6 +86,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profil-customer/edit', [ProfilCustomerController::class, 'edit'])->name('profil-customer.edit');
     Route::post('/profil-customer/update', [ProfilCustomerController::class, 'updateProfil'])->name('profil-customer.update');
     Route::get('/keranjang', [KeranjangController::class, 'tampilkanKeranjang'])->name('keranjang');
+    Route::post('/keranjang/update-jumlah/{id}', [KeranjangController::class, 'updateJumlah'])->name('keranjang.updateJumlah');
     Route::delete('/keranjang/{id}', [KeranjangController::class, 'hapusItem'])->name('hapusKeranjang');
     Route::post('/keranjang/tambah/{id}', [KeranjangController::class, 'tambahKeKeranjang'])->name('tambahKeKeranjang');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout');

@@ -12,9 +12,13 @@ class ProdukController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+    // menampilkan produk milik seller yang sedang login
     public function index()
     {
-        $produk = produk::latest()->paginate(10);
+        $produk = produk::where('id_seller', auth('seller')->user()->id)
+                        ->latest()
+                        ->paginate(10);
         return view('session-seller.seller-produk', compact('produk'));
     }
 
@@ -35,17 +39,20 @@ class ProdukController extends Controller
     }
 
     public function SearchProduk(Request $request)
-{
-    $search = $request->search;
+    {
+        $search = $request->search;
+        $sellerId = auth('seller')->user()->id;
 
-    if ($search) {
-        $produk = produk::where('nama_produk', 'like', "%$search%")->get();
-    } else {
-        $produk = produk::all();
+        if ($search) {
+            $produk = produk::where('id_seller', $sellerId)
+                            ->where('nama_produk', 'like', "%$search%")
+                            ->get();
+        } else {
+            $produk = produk::where('id_seller', $sellerId)->get();
+        }
+
+        return view('session-seller.seller-produk', compact('produk'));
     }
-
-    return view('session-seller.seller-produk', compact('produk'));
-}
 
     /**
      * Store a newly created resource in storage.
@@ -121,15 +128,13 @@ class ProdukController extends Controller
             'id_kategori' => 'required',
             'deskripsi'   => 'required',
             'harga'       => 'required|numeric',
-            'stok'        => 'required|numeric',
+            'stok'        => 'required_if:status,available|nullable|numeric|min:0',
             'status'      => 'required|in:available,unavailable',
-            'foto_produk' => 'image|mimes:jpg,jpeg,png|max:2048',
+            'foto_produk' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         // Pastikan produk milik seller yang sedang login
-        $produk = produk::where('id', $id)
-                        ->where('id_seller', auth('seller')->user()->id)
-                        ->firstOrFail();
+        $produk = produk::findOrFail($id);
         
         DB::beginTransaction();
         try {
@@ -167,8 +172,12 @@ class ProdukController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Gagal update: ' . $e->getMessage());
+            // Tampilkan error spesifik ke session
+            return redirect()->back()
+                ->withInput()
+                ->dd($e->getMessage());
         }
+        
     }
 
     /**

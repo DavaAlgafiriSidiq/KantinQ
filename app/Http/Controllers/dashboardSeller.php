@@ -120,5 +120,21 @@ class dashboardSeller extends Controller
 
         return response()->json(['success' => true]);
     }
-    
+
+    public function checkIncomingOrders()
+    {
+        $sellerId = auth('seller')->id();
+        
+        $orders = \App\Models\Order::where('id_seller', $sellerId)
+                    ->where('status', 'baru') // Hanya ambil yang statusnya masih baru
+                    ->with('profilCustomer')
+                    ->latest()
+                    ->get();
+
+        return response()->json([
+            'count' => $orders->count(),
+            'orders' => $orders
+        ]);
+    }
+        
 }
