@@ -106,3 +106,4 @@ Route::get('/rating/{id}', [RatingController::class, 'create'])->name('rating.cr
 Route::post('/rating/store', [RatingController::class, 'store'])->name('rating.store');
 });
 
+Route::get('/history', [App\Http\Controllers\OrderController::class, 'historyCustomer'])->name('customer.history');

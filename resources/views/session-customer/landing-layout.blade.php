@@ -125,27 +125,32 @@
 
                             {{-- Customer Dropdown --}}
                             <div class="dropdown">
-                                <button class="btn btn-warning text-white dropdown-toggle d-flex align-items-center gap-2"
-                                    type="button" id="dropdownCustomer" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-user"></i>{{ Auth::user()->name }}
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2" aria-labelledby="dropdownCustomer">
-                                    <li>
-                                        <a class="dropdown-item py-2" href="{{ route('profil-customer.index') }}">
-                                            <i class="fas fa-user-circle me-2 text-warning"></i>My Profile
-                                        </a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <form action="{{ route('logout') }}" method="POST">
-                                            @csrf
-                                            <button type="submit" class="dropdown-item py-2 text-danger">
-                                                <i class="fas fa-power-off me-2"></i>Logout
-                                            </button>
-                                        </form>
-                                    </li>
-                                </ul>
-                            </div>
+    <button class="btn btn-warning text-white dropdown-toggle d-flex align-items-center gap-2"
+        type="button" id="dropdownCustomer" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-user"></i> {{ Auth::user()->name }}
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2" aria-labelledby="dropdownCustomer">
+        <li>
+            <a class="dropdown-item py-2" href="{{ route('profil-customer.index') }}">
+                <i class="fas fa-user-circle me-2 text-warning"></i> My Profile
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item py-2" href="{{ route('customer.history') }}">
+                <i class="fas fa-history me-2 text-warning"></i> Riwayat Order
+            </a>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="dropdown-item py-2 text-danger border-0 bg-transparent w-100 text-start">
+                    <i class="fas fa-power-off me-2"></i> Logout
+                </button>
+            </form>
+        </li>
+    </ul>
+</div>
 
                         @else
                             {{-- Login & Register --}}
