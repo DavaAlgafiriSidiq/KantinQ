@@ -22,11 +22,10 @@ class FavoritesController extends Controller
         return view('session-customer.favorite-customer.index', compact('favorites'));
     }
 
-    public function toggleFavorite(Request $request, $id_produk)
-    {
-        if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu untuk menambah favorit.');
-        }
+    public function toggleFavorite(Request $request, $id_produk) {
+    if (!Auth::check()) {
+        return redirect()->route('login')->with('error', 'Silakan login dulu.');
+    }
 
         $user = Auth::user();
         
