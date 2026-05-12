@@ -645,7 +645,7 @@
     <script>
       let lastOrderCount = 0;
 
-      function pollNewOrders() { // Nama fungsi JS diganti
+      function pollNewOrders() {
           $.ajax({
               url: "{{ route('seller.orders.checkNew') }}", // Menggunakan route baru
               method: 'GET',

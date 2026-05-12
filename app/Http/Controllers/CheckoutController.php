@@ -9,6 +9,9 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use Midtrans\Config;
 use Midtrans\Snap;
+use App\Mail\OrderSuccessMail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class CheckoutController extends Controller
 {
@@ -56,6 +59,12 @@ class CheckoutController extends Controller
         $user     = Auth::user();
         $customer = $user->profilCustomer;
 
+        // Validasi profil customer
+        if (!$customer) {
+            return redirect()->route('profil-customer.edit')
+                ->with('error', 'Lengkapi profil dulu sebelum checkout.');
+        }
+
         $keranjang = keranjang::with(['produk', 'seller'])
             ->where('id_profil_customer', $customer->id)
             ->get();
@@ -64,41 +73,44 @@ class CheckoutController extends Controller
             return redirect()->route('keranjang')->with('error', 'Keranjang kosong!');
         }
 
-        // --- AMBIL ID SELLER DARI ITEM PERTAMA ---
-        $idSeller = $keranjang->first()->id_seller; 
+        // Filter item yang produknya masih ada (tidak null)
+        $keranjang = $keranjang->filter(fn($item) => $item->produk !== null);
 
-        $subtotal   = $keranjang->sum(fn($item) => $item->produk->harga * $item->jumlah);
-        $kodeOrder  = 'KQ-' . strtoupper(uniqid());
+        if ($keranjang->isEmpty()) {
+            return redirect()->route('keranjang')
+                ->with('error', 'Produk di keranjang tidak ditemukan, silakan tambah ulang.');
+        }
+
+        // Ambil ID seller dari item pertama
+        $idSeller  = $keranjang->first()->id_seller;
+        $subtotal  = $keranjang->sum(fn($item) => $item->produk->harga * $item->jumlah);
+        $kodeOrder = 'KQ-' . strtoupper(uniqid());
 
         // ── 1. Simpan ke tabel Order ──────────────────────────────
         $pesanan = Order::create([
-            'kode_pesanan'        => $kodeOrder,
+            'kode_pesanan'       => $kodeOrder,
             'id_profil_customer' => $customer->id,
             'id_seller'          => $idSeller,
-            'total_amount'        => $subtotal,
+            'total_amount'       => $subtotal,
             'catatan'            => $request->catatan,
             'status'             => 'baru',
             'status_midtrans'    => 'pending',
         ]);
 
-
-        // ── 2. Simpan item Order ───────────────────────────────────
+        // ── 2. Simpan item Order ──────────────────────────────────
         foreach ($keranjang as $item) {
             OrderItem::create([
-                'order_id' => $pesanan->id,
-                'id_produk'  => $item->id_produk,
-                'id_seller'  => $item->id_seller,
+                'order_id'           => $pesanan->id,
+                'id_produk'          => $item->id_produk,
+                'id_seller'          => $item->id_seller,
                 'id_profil_customer' => $customer->id,
-                'quantity'     => $item->jumlah,
-                'price'      => $item->produk->harga,
-                'subtotal'   => $item->produk->harga * $item->jumlah,
+                'quantity'           => $item->jumlah,
+                'price'              => $item->produk->harga,
+                'subtotal'           => $item->produk->harga * $item->jumlah,
             ]);
         }
 
-        // ── 3. Kosongkan keranjang ───────────────────────────────────
-        keranjang::where('id_profil_customer', $customer->id)->delete();
-
-        // ── 4. Kirim ke Midtrans Snap ────────────────────────────────
+        // ── 3. Siapkan parameter Midtrans ─────────────────────────
         $params = [
             'transaction_details' => [
                 'order_id'     => $kodeOrder,
@@ -123,23 +135,36 @@ class CheckoutController extends Controller
             ],
         ];
 
+        // ── 4. Kirim ke Midtrans Snap ─────────────────────────────
         try {
             $snapToken = Snap::getSnapToken($params);
 
-            // Simpan snap token ke Order (opsional, buat retry)
+            // Simpan snap token ke Order
             $pesanan->update(['snap_token' => $snapToken]);
 
-            return view('session-customer.payment', compact('snapToken', 'pesanan', 'subtotal'));
-       } catch (\Exception $e) {
+            // ✅ FIX: Hapus keranjang HANYA setelah Midtrans berhasil
+            keranjang::where('id_profil_customer', $customer->id)->delete();
 
+            return view('session-customer.payment', compact('snapToken', 'pesanan', 'subtotal'));
+
+        } catch (\Exception $e) {
+            // Rollback: hapus order & item jika Midtrans gagal
             if (isset($pesanan)) {
                 OrderItem::where('order_id', $pesanan->id)->delete();
                 $pesanan->delete();
             }
 
+            // Log error untuk debugging
+            Log::error('Midtrans Snap Error: ' . $e->getMessage(), [
+                'user_id'    => $user->id,
+                'kode_order' => $kodeOrder,
+            ]);
+
+            // ✅ FIX: Keranjang TIDAK dihapus, customer bisa coba lagi
             return redirect()->route('keranjang')
                 ->with('error', 'Gagal menghubungi payment gateway: ' . $e->getMessage());
-        }}
+        }
+    }
 
     /**
      * Callback / Webhook dari Midtrans (POST)
@@ -147,57 +172,79 @@ class CheckoutController extends Controller
      */
     public function callback(Request $request)
     {
-        $serverKey      = config('midtrans.server_key');
-        $hashedKey      = hash('sha512',
+        // 1. Ambil Server Key dari konfigurasi
+        $serverKey = config('midtrans.server_key');
+
+        // 2. Buat Hash untuk verifikasi keamanan (Signature Key)
+        // Rumus: sha512(order_id + status_code + gross_amount + server_key)
+        $hashedKey = hash('sha512',
             $request->order_id .
             $request->status_code .
             $request->gross_amount .
             $serverKey
         );
 
-        // Verifikasi signature
+        // 3. Validasi: Jika signature tidak cocok, abaikan request (mencegah fraud)
         if ($hashedKey !== $request->signature_key) {
             return response()->json(['message' => 'Invalid signature'], 403);
         }
 
-        $pesanan = Order::where('kode_pesanan', $request->order_id)->first();
+        // 4. Cari pesanan berdasarkan kode_pesanan
+        $pesanan = Order::with(['orderItems.produk', 'profilCustomer.user'])
+                    ->where('kode_pesanan', $request->order_id)
+                    ->first();
 
         if (!$pesanan) {
             return response()->json(['message' => 'Order not found'], 404);
         }
 
+        // 5. Tentukan status berdasarkan respon Midtrans
         $transactionStatus = $request->transaction_status;
         $fraudStatus       = $request->fraud_status;
+        $status            = $pesanan->status; // default: pertahankan status lama
 
         if ($transactionStatus === 'capture') {
-            $status = ($fraudStatus === 'accept') ? 'lunas' : 'ditolak';
+            if ($fraudStatus === 'challenge') {
+                $status = 'menunggu_verifikasi';
+            } elseif ($fraudStatus === 'accept') {
+                $status = 'lunas';
+            }
         } elseif ($transactionStatus === 'settlement') {
             $status = 'lunas';
         } elseif (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
             $status = 'dibatalkan';
         } elseif ($transactionStatus === 'pending') {
             $status = 'menunggu_pembayaran';
-        } else {
-            $status = $pesanan->status;
         }
 
+        // 6. Update data pesanan di database
         $pesanan->update([
             'status'          => $status,
             'status_midtrans' => $transactionStatus,
         ]);
 
-        return response()->json(['message' => 'OK']);
+        // 7. Kirim email otomatis jika status berubah menjadi 'lunas'
+        if ($status === 'lunas') {
+            try {
+                $emailTujuan = $pesanan->profilCustomer->user->email;
+                Mail::to($emailTujuan)->send(new OrderSuccessMail($pesanan));
+            } catch (\Exception $e) {
+                Log::error('Gagal kirim email order ' . $pesanan->kode_pesanan . ': ' . $e->getMessage());
+            }
+        }
+
+        return response()->json(['message' => 'Callback processed successfully']);
     }
 
-   /**
+    /**
      * Halaman sukses setelah pembayaran
      */
     public function sukses(Request $request)
     {
-        // Nama variabel harus $pesanan
-        $pesanan = Order::where('kode_pesanan', $request->order_id)->first();
-        
-        // Di dalam compact juga harus 'pesanan'
+        $pesanan = Order::with(['orderItems.produk', 'profilCustomer.user'])
+                    ->where('kode_pesanan', $request->order_id)
+                    ->first();
+
         return view('session-customer.checkout-sukses', compact('pesanan'));
     }
 
@@ -206,10 +253,8 @@ class CheckoutController extends Controller
      */
     public function gagal(Request $request)
     {
-        // Nama variabel harus $pesanan
         $pesanan = Order::where('kode_pesanan', $request->order_id)->first();
-        
-        // Di dalam compact juga harus 'pesanan'
+
         return view('session-customer.checkout-gagal', compact('pesanan'));
     }
 }

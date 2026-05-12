@@ -121,6 +121,23 @@
                             {{-- Tombol Keranjang --}}
                             <a href="{{ route('keranjang') }}" class="btn btn-light border position-relative" title="Keranjang">
                                 <i class="fas fa-shopping-cart text-warning"></i>
+
+                                @auth
+                                    @php
+                                        $profilId = Auth::user()->profilCustomer?->id;
+                                        
+                                        $cartCount = 0;
+                                        if ($profilId) {
+                                            $cartCount = \App\Models\Keranjang::where('id_profil_customer', $profilId)->sum('jumlah');
+                                        }
+                                    @endphp
+                                    
+                                    @if($cartCount > 0)
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+                                            {{ $cartCount > 99 ? '99+' : $cartCount }}
+                                        </span>
+                                    @endif
+                                @endauth
                             </a>
 
                             {{-- Customer Dropdown --}}

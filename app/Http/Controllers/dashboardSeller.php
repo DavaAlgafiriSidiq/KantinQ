@@ -80,7 +80,7 @@ class dashboardSeller extends Controller
         $sellerId = Auth::guard('seller')->id();
         $statusFilter = $request->query('status');
 
-        $query = \App\Models\Order::with('orderItems.produk') 
+        $query = Order::with('orderItems.produk') 
             ->where('id_seller', $sellerId)
             ->whereIn('status', ['baru', 'diproses', 'siap_diambil']);
 
@@ -125,7 +125,7 @@ class dashboardSeller extends Controller
     {
         $sellerId = auth('seller')->id();
         
-        $orders = \App\Models\Order::where('id_seller', $sellerId)
+        $orders = Order::where('id_seller', $sellerId)
                     ->where('status', 'baru') // Hanya ambil yang statusnya masih baru
                     ->with('profilCustomer')
                     ->latest()

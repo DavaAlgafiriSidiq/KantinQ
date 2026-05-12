@@ -131,9 +131,9 @@
 
                                 {{-- Tombol Favorit --}}
                                 @php
-                                    $isFavorite = \App\Models\Favorite::where('id_user', Auth::id())
-                                                    ->where('id_produk', $product->id)
-                                                    ->first();
+                                    $isFavorite = Auth::check() 
+                                        ? \App\Models\Favorite::where('id_user', Auth::id())->where('id_produk', $product->id)->first() 
+                                        : null;
                                 @endphp
 
                                 @if($isFavorite)
@@ -145,12 +145,18 @@
                                         </button>
                                     </form>
                                 @else
-                                    <form action="{{ route('favorites.toggle', $product->id) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-link text-decoration-none p-0" style="color: #6c757d;">
+                                    @if(!Auth::check())
+                                        <a href="{{ route('login') }}" class="btn btn-link text-decoration-none p-0" style="color: #6c757d;">
                                             <i class="far fa-heart" style="font-size: 1.5rem;"></i>
-                                        </button>
-                                    </form>
+                                        </a>
+                                    @else
+                                        <form action="{{ route('favorites.toggle', $product->id) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn btn-link text-decoration-none p-0" style="color: #6c757d;">
+                                                <i class="far fa-heart" style="font-size: 1.5rem;"></i>
+                                            </button>
+                                        </form>
+                                    @endif
                                 @endif
                             </div>
                         </div>

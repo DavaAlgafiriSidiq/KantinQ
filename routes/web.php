@@ -97,9 +97,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/checkout/sukses', [CheckoutController::class, 'sukses'])->name('checkout.sukses');
     Route::get('/checkout/gagal', [CheckoutController::class, 'gagal'])->name('checkout.gagal');
     Route::middleware(['auth'])->group(function () {
-    Route::get('/favorites', [FavoritesController::class, 'index'])->name('favorites.index');
-    Route::post('/favorites/toggle/{id_produk}', [FavoritesController::class, 'toggleFavorite'])->name('favorites.toggle');
-    Route::delete('/favorites/{id}', [FavoritesController::class, 'destroy'])->name('favorites.destroy');
+    Route::get('/favorites', [FavoritesController::class, 'index'])->name('favorites.index')->middleware('auth');
+    Route::post('/favorites/toggle/{id_produk}', [FavoritesController::class, 'toggleFavorite'])->name('favorites.toggle'); 
+    Route::delete('/favorites/{id}', [FavoritesController::class, 'destroy'])->name('favorites.destroy')->middleware('auth');
 });
 
 //ROUTE UNTUK RATING & ULASAN
