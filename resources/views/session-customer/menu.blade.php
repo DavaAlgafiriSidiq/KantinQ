@@ -129,9 +129,15 @@
 
                                     $hasPurchased = false;
                                     if(Auth::check()){
-                                        $hasPurchased = \App\Models\Order::where('id_user', Auth::id())
-                                            ->where('id_produk', $product->id) 
-                                            ->exists();
+                                        $customer = Auth::user()->profilCustomer;
+                                        
+                                        if($customer) {
+                                            $hasPurchased = \App\Models\Order::where('id_profil_customer', $customer->id)
+                                                ->whereHas('orderItems', function ($query) use ($product) {
+                                                    $query->where('id_produk', $product->id);
+                                                })
+                                                ->exists();
+                                        }
                                     }
                                 @endphp
 
