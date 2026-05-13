@@ -108,49 +108,49 @@
                             </a>
 
                           {{-- Customer Dropdown --}}
-<div class="dropdown">
-    <button class="btn btn-warning text-white dropdown-toggle d-flex align-items-center gap-3"
-        type="button" id="dropdownCustomer" data-bs-toggle="dropdown" aria-expanded="false" 
-        style="border-radius: 50px; padding: 6px 20px 6px 8px; max-width: 250px;">
-        
-        {{-- Foto Profil --}}
-        @if(Auth::user()->profil && Auth::user()->profil->foto)
-            <img src="{{ asset(Auth::user()->profil->foto) }}" 
-                 alt="profile" width="40" height="40" class="rounded-circle border border-2 border-white shadow-sm" 
-                 style="object-fit: cover; flex-shrink: 0;">
-        @else
-            <div class="bg-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; flex-shrink: 0;">
-                <i class="fas fa-user text-warning"></i>
-            </div>
-        @endif
+                            <div class="dropdown">
+                                <button class="btn btn-warning text-white dropdown-toggle d-flex align-items-center gap-3"
+                                    type="button" id="dropdownCustomer" data-bs-toggle="dropdown" aria-expanded="false" 
+                                    style="border-radius: 50px; padding: 6px 20px 6px 8px; max-width: 250px;">
+                                    
+                                    {{-- Foto Profil --}}
+                                    @if(Auth::user()->profil && Auth::user()->profil->foto)
+                                        <img src="{{ asset(Auth::user()->profil->foto) }}" 
+                                            alt="profile" width="40" height="40" class="rounded-circle border border-2 border-white shadow-sm" 
+                                            style="object-fit: cover; flex-shrink: 0;">
+                                    @else
+                                        <div class="bg-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; flex-shrink: 0;">
+                                            <i class="fas fa-user text-warning"></i>
+                                        </div>
+                                    @endif
 
-        {{-- Nama yang Dibatasi --}}
-        <span class="fw-bold text-truncate" style="max-width: 120px; display: inline-block;">
-            {{ Auth::user()->name }}
-        </span>
-    </button>
-    
-    <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2 mt-2" aria-labelledby="dropdownCustomer" style="border-radius: 15px; min-width: 220px;">
-        <li class="px-3 py-2 mb-1">
-            <small class="text-muted d-block">Signed in as</small>
-            <strong class="text-dark text-truncate d-block" style="max-width: 180px;">{{ Auth::user()->email }}</strong>
-        </li>
-        <li><hr class="dropdown-divider"></li>
-        <li>
-            <a class="dropdown-item py-2 d-flex align-items-center" href="{{ route('profil-customer.index') }}" style="border-radius: 10px;">
-                <i class="fas fa-user-circle me-3 text-warning"></i>My Profile
-            </a>
-        </li>
-        <li>
-            <form action="{{ route('logout') }}" method="POST" class="m-0">
-                @csrf
-                <button type="submit" class="dropdown-item py-2 text-danger d-flex align-items-center" style="border-radius: 10px; width: 100%;">
-                    <i class="fas fa-power-off me-3"></i>Logout
-                </button>
-            </form>
-        </li>
-    </ul>
-</div>
+                                    {{-- Nama yang Dibatasi --}}
+                                    <span class="fw-bold text-truncate" style="max-width: 120px; display: inline-block;">
+                                        {{ Auth::user()->name }}
+                                    </span>
+                                </button>
+                                
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2 mt-2" aria-labelledby="dropdownCustomer" style="border-radius: 15px; min-width: 220px;">
+                                    <li class="px-3 py-2 mb-1">
+                                        <small class="text-muted d-block">Signed in as</small>
+                                        <strong class="text-dark text-truncate d-block" style="max-width: 180px;">{{ Auth::user()->email }}</strong>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item py-2 d-flex align-items-center" href="{{ route('profil-customer.index') }}" style="border-radius: 10px;">
+                                            <i class="fas fa-user-circle me-3 text-warning"></i>My Profile
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <form action="{{ route('logout') }}" method="POST" class="m-0">
+                                            @csrf
+                                            <button type="submit" class="dropdown-item py-2 text-danger d-flex align-items-center" style="border-radius: 10px; width: 100%;">
+                                                <i class="fas fa-power-off me-3"></i>Logout
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
                         @else
                             {{-- Login & Register --}}
                             <a href="{{ route('login') }}" class="btn btn-warning fw-semibold">

@@ -46,14 +46,12 @@
     </div>
 </div>
 
-{{-- SweetAlert Script untuk Fitur Favorit --}}
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         @if($pesanan && $pesanan->orderItems->count() > 0)
             
-            // Ambil data produk pertama dari list orderItems
-            // Sesuaikan id_produk jika di tabel order_items namanya berbeda
             const idProduk = "{{ $pesanan->orderItems->first()->id_produk }}";
             const namaProduk = "{{ $pesanan->orderItems->first()->produk->nama_produk }}";
             const idOrder = "{{ $pesanan->id }}";
@@ -71,10 +69,8 @@
                     borderRadius: '15px'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // form data favorit
                         let form = document.createElement('form');
                         form.method = 'POST';
-                        // Memanggil route favorites.toggle dengan ID produk
                         form.action = "{{ route('favorites.toggle', ':id') }}".replace(':id', idProduk);
                         
                         form.innerHTML = `
@@ -86,7 +82,7 @@
                         form.submit();
                     }
                 });
-            }, 1000); // Muncul setelah 1 detik
+            }, 1000); 
         @endif
     });
 </script>

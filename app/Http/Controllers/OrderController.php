@@ -41,7 +41,6 @@ class OrderController extends Controller
         foreach ($order->orderItems as $item) {
             $produk = produk::find($item->id_produk);
             
-            // Hanya masukkan ke keranjang jika produk masih ada dan tersedia
             if ($produk && $produk->status == 'available' && $produk->stok > 0) {
                 $keranjangAda = keranjang::where('id_profil_customer', $customer->id)
                                          ->where('id_produk', $item->id_produk)

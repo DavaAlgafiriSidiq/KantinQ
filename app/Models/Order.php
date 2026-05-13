@@ -26,8 +26,12 @@ class Order extends Model
 
         public function seller()
     {
-        // Menggunakan id_seller sebagai foreign key
         return $this->belongsTo(AkunSellerModel::class, 'id_seller');
+    }
+
+    public function detailOrders()
+    {
+        return $this->hasMany(keranjang::class, 'id_order');
     }
 }
 

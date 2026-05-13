@@ -141,35 +141,47 @@
                             </a>
 
                             {{-- Customer Dropdown --}}
-                            <div class="dropdown">
-    <button class="btn btn-warning text-white dropdown-toggle d-flex align-items-center gap-2"
-        type="button" id="dropdownCustomer" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="fas fa-user"></i> {{ Auth::user()->name }}
-    </button>
-    <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2" aria-labelledby="dropdownCustomer">
-        <li>
-            <a class="dropdown-item py-2" href="{{ route('profil-customer.index') }}">
-                <i class="fas fa-user-circle me-2 text-warning"></i> My Profile
-            </a>
-        </li>
-        <li>
-            <a class="dropdown-item py-2" href="{{ route('customer.history') }}">
-                <i class="fas fa-history me-2 text-warning"></i> Riwayat Order
-            </a>
-        </li>
-        <li><hr class="dropdown-divider"></li>
-        <li>
-            <form action="{{ route('logout') }}" method="POST">
-                @csrf
-                <button type="submit" class="dropdown-item py-2 text-danger border-0 bg-transparent w-100 text-start">
-                    <i class="fas fa-power-off me-2"></i> Logout
-                </button>
-            </form>
-        </li>
-    </ul>
-</div>
+                                <div class="dropdown">
+                                    <button class="btn btn-warning text-white dropdown-toggle d-flex align-items-center gap-2"
+                                        type="button" id="dropdownCustomer" data-bs-toggle="dropdown" aria-expanded="false" 
+                                        style="border-radius: 50px; padding: 5px 15px 5px 5px;">
+                                        
+                                        {{-- Logika Menampilkan Foto --}}
+                                        @if(Auth::user()->foto)
+                                            <img src="{{ asset(Auth::user()->foto) }}" 
+                                                alt="profile" width="32" height="32" class="rounded-circle" style="object-fit: cover;">
+                                        @else
+                                            {{-- Pastikan file default.png memang ada di folder ini --}}
+                                            <img src="{{ asset('images/foto_produk/default.png') }}" 
+                                                alt="default" width="32" height="32" class="rounded-circle" style="object-fit: cover;">
+                                        @endif
 
-                        @else
+                                        <span class="d-none d-sm-inline">{{ Auth::user()->name }}</span>
+                                    </button>
+                                    
+                                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2" aria-labelledby="dropdownCustomer">
+                                        <li>
+                                            <a class="dropdown-item py-2" href="{{ route('profil-customer.index') }}">
+                                                <i class="fas fa-user-circle me-2 text-warning"></i> My Profile
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item py-2" href="{{ route('customer.history') }}">
+                                                <i class="fas fa-history me-2 text-warning"></i> Riwayat Order
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form action="{{ route('logout') }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="dropdown-item py-2 text-danger border-0 bg-transparent w-100 text-start">
+                                                    <i class="fas fa-power-off me-2"></i> Logout
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            @else
                             {{-- Login & Register --}}
                             <a href="{{ route('login') }}" class="btn btn-warning fw-semibold">
                                 <i class="fas fa-sign-in-alt me-1"></i>Login

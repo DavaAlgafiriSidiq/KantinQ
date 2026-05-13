@@ -10,7 +10,6 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center mb-5" style="margin-top: -35px; position: relative; z-index: 1;">
                         <div class="flex-shrink-0">
-                            {{-- Memanggil foto dari $profile, jika kosong pakai Gravatar --}}
                             <img src="{{ $profile && $profile->foto ? asset($profile->foto) : 'https://www.gravatar.com/avatar/000?d=mp&s=120' }}" 
                                  class="rounded-circle border border-5 border-white shadow-sm" 
                                  height="120" width="120" style="object-fit: cover; background-color: #f8f9fa;" />
