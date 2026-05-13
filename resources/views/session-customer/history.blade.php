@@ -18,7 +18,7 @@
                     
                     <h5 class="fw-bold text-dark mb-1">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</h5>
                     
-                    {{-- Menampilkan status dengan warna --}}
+                    <!-- Menampilkan status dengan warna -->
                     @php
                         $statusColors = [
                             'baru' => 'primary',
@@ -29,10 +29,24 @@
                         ];
                         $color = $statusColors[$order->status] ?? 'secondary';
                     @endphp
-                    <span class="badge bg-{{ $color }} rounded-pill px-3">
+                   <span class="badge bg-{{ $color }} rounded-pill px-3">
                         {{ ucfirst(str_replace('_', ' ', $order->status)) }}
                     </span>
-                </div>
+                    
+                    <div class="mt-3 p-3 bg-light rounded border">
+                        <h6 class="fw-bold mb-2 text-secondary fs-6"><i class="fas fa-receipt me-2"></i>Detail Pesanan:</h6>
+                        <ul class="list-unstyled mb-0 small">
+                            @foreach($order->orderItems as $item)
+                                <li class="d-flex justify-content-between text-muted mb-1">
+                                    <span>{{ $item->quantity }}x {{ $item->produk->nama_produk ?? 'Menu Dihapus' }}</span>
+                                    <span>Rp {{ number_format($item->price * $item->quantity, 0, ',', '.') }}</span>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    </div>
+                
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
                 
                 <div class="col-md-4 text-md-end mt-3 mt-md-0">
                     <a href="{{ route('session-customer.menu') }}" class="btn btn-warning text-white fw-bold rounded-pill px-4">

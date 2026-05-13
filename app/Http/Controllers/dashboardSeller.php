@@ -30,17 +30,17 @@ class dashboardSeller extends Controller
         $isTokoBuka = $seller->is_open; // Ambil status dari tabel seller
 
 
-        // 1. Hitung Pendapatan hanya dari yang statusnya 'selesai'
+        // Hitung Pendapatan hanya dari yang statusnya 'selesai'
         $totalPendapatan = Order::where('id_seller', $sellerId)
             ->where('status', 'selesai')
             ->sum('total_amount');
 
-        // 2. Hitung Pesanan yang sudah Selesai
+        // Hitung Pesanan yang sudah Selesai
         $pesananSelesai = Order::where('id_seller', $sellerId)
             ->where('status', 'selesai')
             ->count();
 
-        // 3. Ambil Top 3 Menu (Hitung dari order_items)
+        // Ambil Top 3 Menu (Hitung dari order_items)
         $topMenus = DB::table('order_items')
             ->join('produks', 'order_items.id_produk', '=', 'produks.id')
             ->select('produks.nama_produk as name', DB::raw('SUM(order_items.quantity) as total_sold'))
@@ -54,7 +54,7 @@ class dashboardSeller extends Controller
         $pesananDiproses = Order::where('id_seller', $sellerId)->where('status', 'diproses')->count();
         $pesananSiap = Order::where('id_seller', $sellerId)->where('status', 'siap_diambil')->count();
 
-        return view('session-seller.master', compact(
+        return view('session-seller.session-seller-main', compact(
             'totalPendapatan', 'pesananSelesai', 'pesananBaru',
             'pesananDiproses', 'pesananSiap', 'isTokoBuka',
             'topMenus', 'seller', 'riwayatPesanan'
