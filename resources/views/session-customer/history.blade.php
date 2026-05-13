@@ -47,11 +47,21 @@
                     </div>
                 
                 <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                
-                <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                    <a href="{{ route('session-customer.menu') }}" class="btn btn-warning text-white fw-bold rounded-pill px-4">
-                        Pesan Lagi
-                    </a>
+                <div class="col-md-4 text-md-end mt-3 mt-md-0 d-flex flex-column align-items-md-end gap-2">
+    
+                    @if($order->status == 'selesai')
+                        <a href="{{ route('customer.invoice', $order->id) }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                            <i class="fas fa-file-pdf me-1"></i> Unduh Bukti
+                        </a>
+                    @endif
+
+                    <form action="{{ route('customer.pesan-lagi', $order->id) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-warning text-white fw-bold rounded-pill px-4">
+                            <i class="fas fa-redo-alt me-1"></i> Pesan Lagi
+                        </button>
+                    </form>
+
                 </div>
             </div>
         </div>

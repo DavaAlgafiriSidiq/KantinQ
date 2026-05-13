@@ -111,3 +111,6 @@ Route::get('/rating/{id}', [RatingController::class, 'create'])->name('rating.cr
 Route::post('/rating/store', [RatingController::class, 'store'])->name('rating.store');
 
 Route::get('/history', [App\Http\Controllers\OrderController::class, 'historyCustomer'])->name('customer.history');
+// Route untuk fitur Customer: Pesan Lagi & Download Struk
+Route::post('/pesan-lagi/{id}', [App\Http\Controllers\OrderController::class, 'pesanLagi'])->name('customer.pesan-lagi');
+Route::get('/invoice/{id}', [App\Http\Controllers\OrderController::class, 'downloadInvoice'])->name('customer.invoice');
