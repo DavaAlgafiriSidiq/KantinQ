@@ -54,7 +54,7 @@ class dashboardSeller extends Controller
         $pesananDiproses = Order::where('id_seller', $sellerId)->where('status', 'diproses')->count();
         $pesananSiap = Order::where('id_seller', $sellerId)->where('status', 'siap_diambil')->count();
 
-        return view('session-seller.session-seller-main', compact(
+        return view('session-seller.seller-main', compact(
             'totalPendapatan', 'pesananSelesai', 'pesananBaru',
             'pesananDiproses', 'pesananSiap', 'isTokoBuka',
             'topMenus', 'seller', 'riwayatPesanan'
