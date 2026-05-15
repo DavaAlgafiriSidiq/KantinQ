@@ -27,7 +27,7 @@ public function store(Request $request)
     ]);
 
     Rating::create([
-        'user_id' => auth('customer')->id(),
+        'user_id' => auth()->id(),
         'produk_id' => $request->produk_id,
         'rating' => $request->rating,
         'ulasan' => $request->ulasan,

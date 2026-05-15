@@ -27,7 +27,11 @@ class OrderController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('session-customer.history', compact('orders'));
+        $ratedProductIds = \App\Models\Rating::where('user_id', Auth::id())
+            ->pluck('produk_id')
+            ->toArray();
+
+        return view('session-customer.history', compact('orders', 'ratedProductIds'));
     }
 
     // Fitur Pesan Lagi 

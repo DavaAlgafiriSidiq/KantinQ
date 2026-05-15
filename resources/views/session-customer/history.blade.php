@@ -22,6 +22,7 @@
                     @php
                         $statusColors = [
                             'baru' => 'primary',
+                            'lunas' => 'primary',
                             'diproses' => 'info',
                             'siap_diambil' => 'warning',
                             'selesai' => 'success',
@@ -37,13 +38,35 @@
                         <h6 class="fw-bold mb-2 text-secondary fs-6"><i class="fas fa-receipt me-2"></i>Detail Pesanan:</h6>
                         <ul class="list-unstyled mb-0 small">
                             @foreach($order->orderItems as $item)
-                                <li class="d-flex justify-content-between text-muted mb-1">
-                                    <span>{{ $item->quantity }}x {{ $item->produk->nama_produk ?? 'Menu Dihapus' }}</span>
-                                    <span>Rp {{ number_format($item->price * $item->quantity, 0, ',', '.') }}</span>
+                                <li class="d-flex justify-content-between align-items-center text-muted mb-2">
+                                    <div>
+                                        <span>{{ $item->quantity }}x {{ $item->produk?->nama_produk ?? 'Menu Dihapus' }}</span>
+                                        @if($order->status == 'selesai' && $item->produk)
+                                            <div class="mt-2">
+                                                @if(in_array($item->produk->id, $ratedProductIds))
+                                                    <span class="btn btn-sm btn-secondary text-light rounded-pill shadow-sm fw-bold px-3 disabled" style="opacity: 0.7;">
+                                                        <i class="fas fa-check-circle"></i> Sudah Diulas
+                                                    </span>
+                                                @else
+                                                    <a href="{{ route('rating.create', $item->produk->id) }}" class="btn btn-sm btn-warning text-dark rounded-pill shadow-sm fw-bold px-3">
+                                                        <i class="fas fa-star text-dark"></i> Beri Ulasan
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <span class="fw-medium">Rp {{ number_format($item->price * $item->quantity, 0, ',', '.') }}</span>
                                 </li>
                             @endforeach
                         </ul>
                     </div>
+
+                    @if($order->status == 'siap_diambil')
+                    <div class="mt-3 p-3 bg-warning-subtle border border-warning rounded-3 text-center shadow-sm">
+                        <span class="d-block small text-warning-emphasis mb-1"><i class="fas fa-shield-alt me-1"></i> Tunjukkan Kode Ini ke Kasir</span>
+                        <h3 class="fw-bold text-dark mb-0 tracking-widest" style="letter-spacing: 5px;">{{ $order->kode_unik }}</h3>
+                    </div>
+                    @endif
                     </div>
                 
                 <div class="col-md-4 text-md-end mt-3 mt-md-0">

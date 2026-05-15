@@ -89,15 +89,15 @@
 
                         // Logika Tombol Aksi 
                         let btn = '';
-                        if (order.status === 'baru') {
+                        if (order.status === 'baru' || order.status === 'lunas') {
                             btn = `<button onclick="changeStatus(${order.id}, 'diproses')" class="btn btn-sm btn-primary">Terima & Masak</button>`;
                         } else if (order.status === 'diproses') {
                             btn = `<button onclick="changeStatus(${order.id}, 'siap_diambil')" class="btn btn-sm btn-warning text-white">Siap Diambil</button>`;
                         } else if (order.status === 'siap_diambil') {
-                            btn = `<button onclick="changeStatus(${order.id}, 'selesai')" class="btn btn-sm btn-success">Selesai</button>`;
+                            btn = `<button onclick="promptPinAndChangeStatus(${order.id})" class="btn btn-sm btn-success"><i class="fas fa-check-circle me-1"></i>Verifikasi PIN</button>`;
                         }
 
-                        let badgeColor = order.status === 'baru' ? 'danger' : (order.status === 'diproses' ? 'primary' : 'warning');
+                        let badgeColor = (order.status === 'baru' || order.status === 'lunas') ? 'danger' : (order.status === 'diproses' ? 'primary' : 'warning');
 
                         html += `
                             <tr>
@@ -124,10 +124,44 @@
                 _token: "{{ csrf_token() }}",
                 status: newStatus
             },
-            success: function() {
-                fetchOrders(); 
+            success: function(response) {
+                if(response.success) {
+                    fetchOrders(); 
+                } else {
+                    alert("Gagal: " + response.message);
+                }
             }
         });
+    }
+
+    function promptPinAndChangeStatus(id) {
+        let pin = prompt("Masukkan 6-digit Kode Autentikasi (PIN) dari Customer:");
+        if (pin !== null) {
+            if (pin.trim() === "") {
+                alert("PIN tidak boleh kosong!");
+                return;
+            }
+            $.ajax({
+                url: `/seller/orders/${id}/status`,
+                method: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    status: 'selesai',
+                    pin: pin.trim()
+                },
+                success: function(response) {
+                    if(response.success) {
+                        alert("Verifikasi Berhasil! Pesanan selesai dan diserahkan ke pelanggan.");
+                        fetchOrders(); 
+                    } else {
+                        alert("Verifikasi Gagal: " + response.message);
+                    }
+                },
+                error: function() {
+                    alert("Terjadi kesalahan saat verifikasi.");
+                }
+            });
+        }
     }
 
     //  Auto update setiap 5 detik tanpa refresh

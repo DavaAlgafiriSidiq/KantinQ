@@ -82,7 +82,7 @@ class dashboardSeller extends Controller
 
         $query = Order::with('orderItems.produk') 
             ->where('id_seller', $sellerId)
-            ->whereIn('status', ['baru', 'diproses', 'siap_diambil']);
+            ->whereIn('status', ['baru', 'lunas', 'diproses', 'siap_diambil']);
 
         if ($statusFilter && $statusFilter !== 'semua') {
             $query->where('status', $statusFilter);
@@ -115,6 +115,23 @@ class dashboardSeller extends Controller
     public function updateOrderStatus(Request $request, $id)
     {
         $order = Order::where('id_seller', Auth::guard('seller')->id())->findOrFail($id);
+        
+        // --- PICKUP AUTHENTICATION LOGIC ---
+        if ($request->status == 'siap_diambil' && $order->status != 'siap_diambil') {
+            // Hasilkan 6-digit PIN secara acak
+            $order->kode_unik = str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT);
+        }
+
+        if ($request->status == 'selesai') {
+            // Verifikasi PIN jika diberikan
+            if ($request->has('pin') && $request->pin !== $order->kode_unik) {
+                return response()->json(['success' => false, 'message' => 'Kode Autentikasi (PIN) salah!']);
+            }
+            // Catat waktu pengambilan sebagai bukti serah terima
+            $order->waktu_pengambilan = now();
+        }
+        // -----------------------------------
+
         $order->status = $request->status;
         $order->save();
 
@@ -126,7 +143,7 @@ class dashboardSeller extends Controller
         $sellerId = auth('seller')->id();
         
         $orders = Order::where('id_seller', $sellerId)
-                    ->where('status', 'baru') // Hanya ambil yang statusnya masih baru
+                    ->whereIn('status', ['baru', 'lunas']) // Termasuk lunas dari Midtrans
                     ->with('profilCustomer')
                     ->latest()
                     ->get();

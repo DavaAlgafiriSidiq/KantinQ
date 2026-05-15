@@ -6,7 +6,7 @@ use App\Http\Controllers\ProdukController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\dashboardSeller;
 use App\Http\Controllers\ProfilCustomerController;
-use App\Http\Controllers\landingController;
+use App\Http\Controllers\LandingController;
 use App\Http\Controllers\KeranjangController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\FavoritesController;
@@ -43,13 +43,13 @@ Route::middleware('auth:seller')->controller(AkunSellerController::class)->group
     // SELLER (DASHBOARD)   
     Route::get('/seller', [dashboardSeller::class, 'index'])->name('master');
     // Route untuk mengubah status toko 
-   Route::post('/dashboard-seller/toggle-status', [dashboardSeller::class, 'toggleStatus'])->name('seller.toggle-status');
+    Route::post('/dashboard-seller/toggle-status', [dashboardSeller::class, 'toggleStatus'])->name('seller.toggle-status');
 
     //  ROUTE  UNTUK FITUR REAL-TIME ANTREAN 
     Route::get('/seller/orders/data', [dashboardSeller::class, 'getOrderData'])->name('seller.orders.data');
     Route::post('/seller/orders/{id}/status', [dashboardSeller::class, 'updateOrderStatus'])->name('seller.orders.status');
     Route::get('/seller/orders/check-new', [dashboardSeller::class, 'checkIncomingOrders'])->name('seller.orders.checkNew');
-   
+
 
     // --- FITUR PROFIL SELLER ---
     Route::get('/seller/profil', 'indexProfil')->name('profil-seller.index');
@@ -91,7 +91,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/keranjang/tambah/{id}', [KeranjangController::class, 'tambahKeKeranjang'])->name('tambahKeKeranjang');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout');
 
-        // ── CHECKOUT & PEMBAYARAN ─────────────────────────────────
+    // ── CHECKOUT & PEMBAYARAN ─────────────────────────────────
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout/proses', [CheckoutController::class, 'proses'])->name('checkout.proses');
     Route::get('/checkout/sukses', [CheckoutController::class, 'sukses'])->name('checkout.sukses');
